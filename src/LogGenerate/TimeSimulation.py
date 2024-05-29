@@ -25,8 +25,8 @@ if __name__ == '__main__':
     test_tsv_generate()
     data = pd.read_csv('./test.tsv', sep='\t')
 
-    remote_log = LogUploader.LogUploader('localhost', 22, 'root', 'root')
-    remote_log.connect()
+    # remote_log = LogUploader.LogUploader('localhost', 22, 'root', 'root')
+    # remote_log.connect()
 
     index = 0
     start_time = datetime(2019, 6, 15, 10, 19, 50)  # 6/15/2019 10:19:50 PM
@@ -39,7 +39,9 @@ if __name__ == '__main__':
 
                 # 日志生成
                 # 选择是生成到本地日志文件还是发送到服务器
-                remote_log.write_data_to_file(data.loc[index], '/root/log/impression.log')
+                # remote_log.write_data_to_file(data.loc[index], '/root/log/impression.log')
+                with open('../../log/impression.log', 'a') as file:
+                    file.write(data.loc[index].to_json() + '\n')
 
                 index += 1
         time.sleep(1)
