@@ -1,0 +1,60 @@
+<mxfile host="Electron" modified="2024-05-27T12:24:37.215Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.2 Chrome/114.0.5735.289 Electron/25.9.4 Safari/537.36" etag="KrwmTW9IqpdwP2-D5gOA" version="22.1.2" type="device">
+  <diagram name="第 1 页" id="ptOUYfW6S8ZAG48k3fLp">
+    <mxGraphModel dx="757" dy="681" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="XGb1cgep01IunEYs5Dor-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="XGb1cgep01IunEYs5Dor-2" target="XGb1cgep01IunEYs5Dor-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XGb1cgep01IunEYs5Dor-2" value="Flume：采集数据" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="324.5" y="350" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="XGb1cgep01IunEYs5Dor-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="XGb1cgep01IunEYs5Dor-3" target="XGb1cgep01IunEYs5Dor-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XGb1cgep01IunEYs5Dor-6" value="模拟真实的数据生成流程(时序的日志产生)&lt;br&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="XGb1cgep01IunEYs5Dor-5">
+          <mxGeometry x="-0.1476" y="1" relative="1" as="geometry">
+            <mxPoint x="105" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XGb1cgep01IunEYs5Dor-3" value="已有新闻数据&lt;br&gt;即新闻曝光日志（Impression Log）" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="314.5" y="220" width="140" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="XGb1cgep01IunEYs5Dor-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="XGb1cgep01IunEYs5Dor-7" target="XGb1cgep01IunEYs5Dor-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XGb1cgep01IunEYs5Dor-7" value="Kafka：流量控制" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="324.5" y="440" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="XGb1cgep01IunEYs5Dor-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0;exitDx=0;exitDy=30;exitPerimeter=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="XGb1cgep01IunEYs5Dor-10" target="XGb1cgep01IunEYs5Dor-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XGb1cgep01IunEYs5Dor-10" value="HBase+Hive：存储系统" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="314.5" y="530" width="140" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="XGb1cgep01IunEYs5Dor-14" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;labelPosition=left;verticalLabelPosition=middle;align=right;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="260" y="380" width="40" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="XGb1cgep01IunEYs5Dor-16" value="ETL过程&lt;br&gt;抽取（Extract）&lt;br&gt;转换（Transform）&lt;br&gt;加载（Load）" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="130" y="447.5" width="120" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="XGb1cgep01IunEYs5Dor-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="XGb1cgep01IunEYs5Dor-17" target="XGb1cgep01IunEYs5Dor-23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XGb1cgep01IunEYs5Dor-17" value="Spark：Query Server" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="545" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="XGb1cgep01IunEYs5Dor-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=60;entryPerimeter=0;" edge="1" parent="1" source="XGb1cgep01IunEYs5Dor-17" target="XGb1cgep01IunEYs5Dor-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XGb1cgep01IunEYs5Dor-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="XGb1cgep01IunEYs5Dor-23" target="XGb1cgep01IunEYs5Dor-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XGb1cgep01IunEYs5Dor-23" value="UI" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="640" width="130" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
