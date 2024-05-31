@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2024-05-30T14:50:09.067Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.2 Chrome/114.0.5735.289 Electron/25.9.4 Safari/537.36" etag="-k_oZh_o1NFlVWPUlKHs" version="22.1.2" type="device">
+<mxfile host="Electron" modified="2024-05-30T18:39:40.389Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.2 Chrome/114.0.5735.289 Electron/25.9.4 Safari/537.36" etag="3bTGuW5NH78Oul-anhrm" version="22.1.2" type="device">
   <diagram name="第 1 页" id="ptOUYfW6S8ZAG48k3fLp">
-    <mxGraphModel dx="1098" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="757" dy="566" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -15,11 +15,11 @@
         </mxCell>
         <mxCell id="XGb1cgep01IunEYs5Dor-6" value="模拟真实的数据生成流程(时序的日志产生)&lt;br&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="XGb1cgep01IunEYs5Dor-5" vertex="1" connectable="0">
           <mxGeometry x="-0.1476" y="1" relative="1" as="geometry">
-            <mxPoint x="105" as="offset" />
+            <mxPoint x="105" y="-9" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="XGb1cgep01IunEYs5Dor-3" value="已有新闻数据&lt;br&gt;即新闻曝光日志（Impression Log）" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" parent="1" vertex="1">
-          <mxGeometry x="314.5" y="60" width="140" height="90" as="geometry" />
+          <mxGeometry x="314.5" y="50" width="140" height="90" as="geometry" />
         </mxCell>
         <mxCell id="XGb1cgep01IunEYs5Dor-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="XGb1cgep01IunEYs5Dor-7" target="XGb1cgep01IunEYs5Dor-10" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -61,13 +61,40 @@
           <mxGeometry x="324.5" y="270" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="U2Onlyu2_6j4N5bPEz4X-6" value="" style="group" parent="1" vertex="1" connectable="0">
-          <mxGeometry x="140" y="220" width="160" height="360" as="geometry" />
+          <mxGeometry x="140" y="210" width="160" height="370" as="geometry" />
         </mxCell>
         <mxCell id="XGb1cgep01IunEYs5Dor-14" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;labelPosition=left;verticalLabelPosition=middle;align=right;verticalAlign=middle;" parent="U2Onlyu2_6j4N5bPEz4X-6" vertex="1">
-          <mxGeometry x="120" width="40" height="360" as="geometry" />
+          <mxGeometry x="120" width="40" height="369.99999999999994" as="geometry" />
         </mxCell>
         <mxCell id="XGb1cgep01IunEYs5Dor-16" value="ETL过程&lt;br&gt;抽取（Extract）&lt;br&gt;转换（Transform）&lt;br&gt;加载（Load）" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="U2Onlyu2_6j4N5bPEz4X-6" vertex="1">
-          <mxGeometry y="147.5" width="120" height="65" as="geometry" />
+          <mxGeometry y="151.5972222222222" width="120" height="66.80555555555554" as="geometry" />
+        </mxCell>
+        <mxCell id="yUt5xuFoCq-Sl0m5r0FM-1" value="JavaApplication：&lt;br&gt;FlumeAPI&lt;br&gt;管理、远程控制" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yUt5xuFoCq-Sl0m5r0FM-2" value="JavaApplication：&lt;br&gt;KafkaAPI&lt;br&gt;管理、远程控制" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="270" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yUt5xuFoCq-Sl0m5r0FM-3" value="JavaApplication：&lt;br&gt;SparkAPI&lt;br&gt;管理、任务发布" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="360" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yUt5xuFoCq-Sl0m5r0FM-4" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="XGb1cgep01IunEYs5Dor-2" target="yUt5xuFoCq-Sl0m5r0FM-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="480" y="240" as="sourcePoint" />
+            <mxPoint x="494.5" y="160" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yUt5xuFoCq-Sl0m5r0FM-5" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="444.5" y="389.65999999999997" as="sourcePoint" />
+            <mxPoint x="519.5" y="389.65999999999997" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yUt5xuFoCq-Sl0m5r0FM-6" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="445" y="299.65999999999997" as="sourcePoint" />
+            <mxPoint x="520" y="299.65999999999997" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>

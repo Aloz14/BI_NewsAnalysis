@@ -1,3 +1,5 @@
+实现日志采集使用了Flume框架。
+
 **Requirement**：
 
 - Flume 1.11.0
