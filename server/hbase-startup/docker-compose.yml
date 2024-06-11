@@ -1,0 +1,17 @@
+version: '3'
+services:
+  hbase:
+    image: harisekhon/hbase
+    container_name: hbase
+    hostname: hbase
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - "2181:2181"
+      - "8081:8080"
+      - "8085:8085"
+      - "9090:9090"
+      - "9095:9095"
+      - "16010:16010"

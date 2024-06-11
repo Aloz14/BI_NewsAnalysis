@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 
 # for testing
 def test_tsv_generate():
-    if not os.path.exists('../../dataset/train.tsv'):
+    if not os.path.exists('../../../dataset/train.tsv'):
         print('Target file is not exist')
         return
 
@@ -51,7 +51,7 @@ if __name__ == '__main__':
                 # 日志生成
                 # 选择是生成到本地日志文件还是发送到服务器
                 # remote_log.write_data_to_file(data.loc[index], '/root/log/impression.log')
-                with open('../../log/impression-' + str(time.time()) + '.log', 'a') as file:
+                with open('../../../log/impression-' + str(time.time()) + '.log', 'a') as file:
                     file.write(data.loc[index].to_json() + '\n')
 
                 index += 1

@@ -3,15 +3,74 @@
 
 ## 架构设计
 
-![image-20240527203037763](./img/Architect.png)
+![image-20240527203037763](./img/Arch.drawio.png)
 
 ## 存储系统设计
 
-使用HBase+Hive的设计。
+使用HBase。
 
-Hive主要使用在ETL过程中。
+主要面向ETL结果存储和Query请求。
 
-HBase主要面向Query请求。
+## 数据库表设计
+
+### News Clicks
+table name: news_clicks
+
+description: 用于存储新闻的被曝光时间和用户浏览时间
+
+attribute:
+
+- news_id
+- exposure_time
+- dwelltime
+
+row key:
+
+news_id + exposure_time : bytes
+
+ddl:
+
+create "news_clicks" ,"info"
+
+### User History
+table name: user_history
+
+description: 用于存储用户访问记录，包括未访问和访问的新闻
+
+attribute:
+
+- user_id
+- news_id
+- is_clicked
+- exposure_time
+- dwelltime
+
+row key:
+
+user_id + news_id + exposure_time : bytes
+
+ddl:
+
+create "user_history", "info"
+
+#### News Info
+table name: news_info
+
+description: 新闻信息
+
+attribute:
+
+- news_id
+- category
+- topic
+- headline
+- news_body
+- title_entity
+- entity_content
+
+ddl:
+
+create "news_info", "info"
 
 ## 数据集
 

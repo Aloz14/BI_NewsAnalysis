@@ -1,0 +1,8 @@
+1. 创建bitnami/spark:latest docker容器
+2. 使用docker exec -it -u root <container_id> /bin/bash以root用户进入终端
+3. 配置镜像源sed -i 's|http://deb.debian.org/debian|http://mirrors.aliyun.com/debian|g' /etc/apt/sources.list
+4. 安装gcc等依赖apt-get update && \
+    apt-get install -y build-essential python3-dev libkrb5-dev && \
+    apt-get clean
+5. 安装happybase库pip install happybase -i https://mirrors.aliyun.com/pypi/simple/
+6. 提交任务bin/spark-submit --conf spark.jars.ivy="/tmp" /opt/bitnami/tasks/main.py --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1

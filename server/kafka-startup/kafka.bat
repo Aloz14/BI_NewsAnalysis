@@ -27,7 +27,7 @@ if /i "%1"=="start" (
     ) else (
         rem 消费
         echo Executing Kafka Control for topic %2...
-        call %BASE_DIR%\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic %2
+        call %BASE_DIR%\bin\windows\kafka-console-consumer.bat --bootstrap-server 43.142.45.216:9092 --topic %2 --from-beginning
         exit /b 0
     )
 ) else if /i "%1"=="kp" (
@@ -38,13 +38,13 @@ if /i "%1"=="start" (
       ) else (
           rem 生产
           echo Executing Kafka Control for topic %2...
-          call %BASE_DIR%\bin\windows\kafka-console-producer.bat --bootstrap-server localhost:9092 --topic %2
+          call %BASE_DIR%\bin\windows\kafka-console-producer.bat --bootstrap-server 43.142.45.216:9092 --topic %2
           exit /b 0
       )
 ) else if /i "%1"=="list" (
     rem 列出所有的 topic
     echo Listing all topics...
-    call %BASE_DIR%\bin\windows\kafka-topics.bat --bootstrap-server localhost:9092 --list
+    call %BASE_DIR%\bin\windows\kafka-topics.bat --bootstrap-server 43.142.45.216:9092 --list
     exit /b 0
 ) else if /i "%1"=="create" (
     rem 创建新的 topic
@@ -53,7 +53,7 @@ if /i "%1"=="start" (
         exit /b 1
     ) else (
         echo Creating topic %2...
-        call %BASE_DIR%\bin\windows\kafka-topics.bat --bootstrap-server localhost:9092 --create --topic %2 --partitions 3 --replication-factor 1
+        call %BASE_DIR%\bin\windows\kafka-topics.bat --bootstrap-server 43.142.45.216:9092 --create --topic %2 --partitions 3 --replication-factor 1
         exit /b 0
     )
 ) else if /i "%1"=="delete" (
@@ -63,7 +63,7 @@ if /i "%1"=="start" (
         exit /b 1
     ) else (
         echo Deleting topic %2...
-        call %BASE_DIR%\bin\windows\kafka-topics.bat --bootstrap-server localhost:9092 --delete --topic %2
+        call %BASE_DIR%\bin\windows\kafka-topics.bat --bootstrap-server 43.142.45.216:9092 --delete --topic %2
         exit /b 0
     )
 ) else if /i "%1"=="describe" (
@@ -73,7 +73,7 @@ if /i "%1"=="start" (
         exit /b 1
     ) else (
         echo Describing topic %2...
-        call %BASE_DIR%\bin\windows\kafka-topics.bat --bootstrap-server localhost:9092 --describe --topic %2
+        call %BASE_DIR%\bin\windows\kafka-topics.bat --bootstrap-server 43.142.45.216:9092 --describe --topic %2
         exit /b 0
     )
 ) else (
