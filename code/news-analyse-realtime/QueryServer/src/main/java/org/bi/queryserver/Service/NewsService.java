@@ -29,6 +29,12 @@ public class NewsService {
     @Autowired
     RedisDAO redisDAO;
 
+    /**
+     * 获取历史数据 TBDTBDTBD
+     * @param newsID
+     * @return NewsHistory
+     * @throws Exception
+     */
     public NewsHistory getNewsHistory(String newsID) throws Exception {
         final String TABLE_NAME = "news_clicks";
         final String CF_NAME = "info";
@@ -50,7 +56,6 @@ public class NewsService {
 
         // 启动性能记录
         PerformanceLogger logger = new PerformanceLogger();
-        logger.start();
         // 创建StringBuilder对象用于记录查询内容
         StringBuilder queryInfo = new StringBuilder();
         queryInfo.append("SELECT * FROM ").append(TABLE_NAME).append(" WHERE ")
@@ -65,6 +70,7 @@ public class NewsService {
 
         logger.setSqlContent(queryInfo.toString());
 
+        logger.start();
         final String redisKey = TABLE_NAME + ":" + newsID;
         if(redisDAO.exists(redisKey)) {
             logger.stop();
@@ -95,6 +101,12 @@ public class NewsService {
         return newsHistory;
     }
 
+    /**
+     * 获取新闻信息的接口，Archived
+     * @param newsID
+     * @return NewsInfo
+     * @throws Exception
+     */
     public NewsInfo getNewsInfo(String newsID) throws Exception {
         final String TABLE_NAME = "news_info";
         final String CF_NAME = "info";
@@ -104,20 +116,9 @@ public class NewsService {
         final String COL_NAME_HEADLINE = "headline";
         final String COL_NAME_NEWSBODY = "news_body";
 
-        // 配置单列值过滤器
-        SingleColumnValueFilter singleColumnValueFilter = new SingleColumnValueFilter(
-                CF_NAME.getBytes(),             // 列族
-                COL_NAME_NEWS_ID.getBytes(),    // 列名
-                CompareOperator.EQUAL,
-                newsID.getBytes()
-        );
-
-        // 启用过滤
-        singleColumnValueFilter.setFilterIfMissing(true);
 
         // 性能记录
         PerformanceLogger logger = new PerformanceLogger();
-        logger.start();
         StringBuilder queryInfo = new StringBuilder();
         queryInfo.append("SELECT * FROM ").append(TABLE_NAME).append(" WHERE ")
                 .append(COL_NAME_NEWS_ID).append(" = '").append(newsID).append("';\n");
@@ -132,17 +133,20 @@ public class NewsService {
                 append(COL_NAME_NEWSBODY).append("\n");
 
         logger.setSqlContent(queryInfo.toString());
+        logger.start();
 
+
+        /* 无需再使用Redis优化
         final String redisKey = TABLE_NAME + ":" + newsID;
         // 若redis中存在，则直接返回
         if (redisDAO.exists(redisKey)) {
             logger.stop();
             logger.writeToMySQL(mysqlDAO);
             return redisDAO.get(redisKey, NewsInfo.class);
-        }
+        }*/
 
         // 获取数据
-        List<Map<String, String>> res = hbaseDAO.getData(TABLE_NAME, singleColumnValueFilter);
+        Map<String, String> res = hbaseDAO.getData(TABLE_NAME, newsID);
 
         logger.stop();
 
@@ -151,12 +155,10 @@ public class NewsService {
                 headline = null,
                 newsBody = null;
 
-        for (Map<String, String> row : res) {
-            category = row.get(CF_NAME + ":" + COL_NAME_CATEGORY);
-            topic = row.get(CF_NAME + ":" + COL_NAME_TOPIC);
-            headline = row.get(CF_NAME + ":" + COL_NAME_HEADLINE);
-            newsBody = row.get(CF_NAME + ":" + COL_NAME_NEWSBODY);
-        }
+        category = res.get(CF_NAME + ":" + COL_NAME_CATEGORY);
+        topic = res.get(CF_NAME + ":" + COL_NAME_TOPIC);
+        headline = res.get(CF_NAME + ":" + COL_NAME_HEADLINE);
+        newsBody = res.get(CF_NAME + ":" + COL_NAME_NEWSBODY);
 
 
         logger.writeToMySQL(mysqlDAO);
@@ -167,7 +169,6 @@ public class NewsService {
                 headline,
                 newsBody
         );
-        redisDAO.set(redisKey,newsInfo);
         return newsInfo;
     }
 
