@@ -16,6 +16,9 @@ NEWS_INFO_KEYS = ["news_id",
 
 df = pd.read_csv("./news.tsv",sep='\t')
 
+# 获取总行数
+total_rows = len(df)
+
 # transform every row to a object
 
 connection = happybase.Connection(HBASE_HOST,HBASE_PORT)
@@ -30,6 +33,8 @@ for index, row in df.iterrows():
     news_body = row['News body']
     title_entity = row['Title entity']
     entity_content = row['Entity content']
+    print(f"Processed {index} records out of {total_rows}", end="\r")
+
     
     # store to hbase
     table.put(  news_id.encode(), 
@@ -37,7 +42,7 @@ for index, row in df.iterrows():
                 NEWS_INFO_CF+":"+NEWS_INFO_KEYS[1]: category.encode(),
                 NEWS_INFO_CF+":"+NEWS_INFO_KEYS[2]: topic.encode(),
                 NEWS_INFO_CF+":"+NEWS_INFO_KEYS[3]: headline.encode(),
-                NEWS_INFO_CF+":"+NEWS_INFO_KEYS[4]: news_body.encode(),
+                NEWS_INFO_CF+":"+NEWS_INFO_KEYS[4]: str(news_body).encode(),
                 NEWS_INFO_CF+":"+NEWS_INFO_KEYS[5]: title_entity.encode(),
                 NEWS_INFO_CF+":"+NEWS_INFO_KEYS[6]: entity_content.encode()})
     
