@@ -13,6 +13,11 @@ public class NewsHistory {
         exposures = new ArrayList<>();
     }
 
+    public NewsHistory(String newsID, List<Exposure> exposures) {
+        this.newsID = newsID;
+        this.exposures = exposures;
+    }
+
     public String getNewsID() {
         return newsID;
     }
@@ -21,11 +26,11 @@ public class NewsHistory {
         return exposures;
     }
 
-    public boolean addExposure(Instant exposureTime, Integer dwellTime){
-        return exposures.add(new Exposure(exposureTime,dwellTime));
+    public boolean addExposure(Instant exposureTime, Integer dwellTime) {
+        return exposures.add(new Exposure(exposureTime, dwellTime));
     }
 
-    public boolean addExposure(Exposure e){
+    public boolean addExposure(Exposure e) {
         return exposures.add(e);
     }
 }

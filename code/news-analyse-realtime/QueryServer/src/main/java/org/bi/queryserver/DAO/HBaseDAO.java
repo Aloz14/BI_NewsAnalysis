@@ -38,6 +38,7 @@ public class HBaseDAO {
 
     /**
      * 获取数据（全表数据）
+     *
      * @param tableName 表名
      * @return map
      */
@@ -47,7 +48,7 @@ public class HBaseDAO {
             Table table = hbaseAdmin.getConnection().getTable(TableName.valueOf(tableName));
             Scan scan = new Scan();
             ResultScanner resultScanner = table.getScanner(scan);
-            for(Result result : resultScanner) {
+            for (Result result : resultScanner) {
                 HashMap<String, String> map = new HashMap<>();
                 //rowkey
                 String row = Bytes.toString(result.getRow());
@@ -75,8 +76,9 @@ public class HBaseDAO {
 
     /**
      * 获取数据（根据传入的filter）
+     *
      * @param tableName 表名
-     * @param filter 过滤器
+     * @param filter    过滤器
      * @return map
      */
     public List<Map<String, String>> getData(String tableName, Filter filter) {
@@ -87,7 +89,7 @@ public class HBaseDAO {
             // 添加过滤器
             scan.setFilter(filter);
             ResultScanner resultScanner = table.getScanner(scan);
-            for(Result result : resultScanner) {
+            for (Result result : resultScanner) {
                 HashMap<String, String> map = new HashMap<>();
                 //rowkey
                 String row = Bytes.toString(result.getRow());
@@ -115,8 +117,9 @@ public class HBaseDAO {
 
     /**
      * 获取数据（根据rowkey）
+     *
      * @param tableName 表名
-     * @param rowKey rowKey
+     * @param rowKey    rowKey
      * @return map
      */
     public Map<String, String> getData(String tableName, String rowKey) {
@@ -148,9 +151,10 @@ public class HBaseDAO {
 
     /**
      * 获取数据（根据rowkey，列族，列）
-     * @param tableName 表名
-     * @param rowKey rowKey
-     * @param columnFamily 列族
+     *
+     * @param tableName       表名
+     * @param rowKey          rowKey
+     * @param columnFamily    列族
      * @param columnQualifier 列
      * @return map
      */
