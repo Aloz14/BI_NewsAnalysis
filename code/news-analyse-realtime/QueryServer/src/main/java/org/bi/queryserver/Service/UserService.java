@@ -3,10 +3,16 @@ package org.bi.queryserver.Service;
 import org.bi.queryserver.DAO.HBaseDAO;
 import org.bi.queryserver.DAO.MySQLDAO;
 import org.bi.queryserver.DAO.RedisDAO;
+import org.bi.queryserver.Domain.Favor;
+import org.bi.queryserver.Utils.NewsCategories;
 import org.bi.queryserver.Utils.PerformanceLogger;
+import org.bi.queryserver.Utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +30,7 @@ public class UserService {
     @Autowired
     NewsService newsService;
 
-    public void getUserHistory(String userID,
+    public List<Favor> getUserHistory(String userID,
                                String startTime,
                                String endTime) throws Exception {
 
@@ -32,6 +38,7 @@ public class UserService {
         final String CF_NAME = "info";
         final String COL_NAME_USER_ID = "user_id";
         final String COL_NAME_NEWS_ID = "news_id";
+        final String COL_NAME_EXPOSURETIME = "exposure_time";
 
         final String START_ROW_KEY = userID + startTime;
         final String END_ROW_KEY = userID + endTime;
@@ -72,15 +79,30 @@ public class UserService {
         logger.writeToMySQL(mysqlDAO);
 
 
-        // 此处性能需要优化
-        // 总的查询为139.0ms,然而响应时间为557ms，推测连接时间过长
-        for (Map<String, String> row : res) {
-            String newsID = row.get(CF_NAME + ":" + COL_NAME_NEWS_ID);
-            String category = newsService.getNewsCategory(newsID);
+        // favor: 一个Instant对应一个类别
+        List<Favor> favors = new ArrayList<Favor>();
+        List<Instant> instants = TimeUtils.splitInstants(startTime,endTime,SEG_NUM);
+        for (Instant instant : instants) {
+            favors.add(new Favor(instant));
         }
 
+        // 此处性能需要优化
+        // 总的查询时间为139.0ms,然而响应时间为557ms，频繁的查询请求中，连接和处理占用了大部分时间
+        // 优化方向：使用多线程
+        for (Map<String, String> row : res) {
+            String newsID = row.get(CF_NAME + ":" + COL_NAME_NEWS_ID);
+            Instant exposureTime = TimeUtils.stringToInstant(row.get(CF_NAME + ":" + COL_NAME_EXPOSURETIME));
+            String category = newsService.getNewsCategory(newsID);
+            for (int i = 0; i < instants.size() - 1; i++) {
+                Instant startInstant = instants.get(i);
+                Instant endInstant = instants.get(i + 1);
+                if (exposureTime.isAfter(startInstant) && exposureTime.isBefore(endInstant)) {
+                    favors.get(i).addCategoryCount(category);
+                    break;
+                }
+            }
+        }
 
+        return favors;
     }
-
-
 }
