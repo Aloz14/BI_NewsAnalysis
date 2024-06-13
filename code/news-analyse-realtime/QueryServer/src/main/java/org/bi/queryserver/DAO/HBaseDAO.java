@@ -150,6 +150,49 @@ public class HBaseDAO {
     }
 
     /**
+     * 获取数据（根据RowKey的范围）
+     *
+     * @param tableName
+     * @param startRowKey
+     * @param endRowKey
+     * @return
+     */
+    public List<Map<String,String>> getData(String tableName,
+                                            String startRowKey,String endRowKey){
+        List<Map<String, String>> list = new ArrayList<>();
+        try {
+            Table table = hbaseAdmin.getConnection().getTable(TableName.valueOf(tableName));
+            Scan scan = new Scan();
+            scan.withStartRow(startRowKey.getBytes()).withStopRow(endRowKey.getBytes());
+
+            ResultScanner resultScanner = table.getScanner(scan);
+            for (Result result : resultScanner) {
+                HashMap<String, String> map = new HashMap<>();
+                String row = Bytes.toString(result.getRow());
+                map.put("row", row);
+                for (Cell cell : result.listCells()) {
+                    //列族
+                    String family = Bytes.toString(cell.getFamilyArray(),
+                            cell.getFamilyOffset(), cell.getFamilyLength());
+                    //列
+                    String qualifier = Bytes.toString(cell.getQualifierArray(),
+                            cell.getQualifierOffset(), cell.getQualifierLength());
+                    //值
+                    String data = Bytes.toString(cell.getValueArray(),
+                            cell.getValueOffset(), cell.getValueLength());
+                    map.put(family + ":" + qualifier, data);
+                }
+                list.add(map);
+            }
+            table.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    /**
      * 获取数据（根据rowkey，列族，列）
      *
      * @param tableName       表名

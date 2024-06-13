@@ -41,8 +41,13 @@ public class NewsService {
         final String COL_NAME_NEWS_ID = "news_id";
         final String COL_NAME_EXPOSURETIME = "exposure_time";
         final String COL_NAME_DWELLTIME = "dwelltime";
+        String startTime = "2019-06-13 00:00:00";
+        String endTime = "2019-07-13 23:59:59";
+        String startRowKey = newsID + startTime;
+        String endRowKey = newsID + endTime;
 
 
+        /*
         // 配置单列值过滤器
         SingleColumnValueFilter singleColumnValueFilter = new SingleColumnValueFilter(
                 CF_NAME.getBytes(),             // 列族
@@ -53,6 +58,8 @@ public class NewsService {
 
         // 启用过滤
         singleColumnValueFilter.setFilterIfMissing(true);
+
+         */
 
         // 启动性能记录
         PerformanceLogger logger = new PerformanceLogger();
@@ -71,14 +78,18 @@ public class NewsService {
         logger.setSqlContent(queryInfo.toString());
 
         logger.start();
+
+        /*
         final String redisKey = TABLE_NAME + ":" + newsID;
         if(redisDAO.exists(redisKey)) {
             logger.stop();
             logger.writeToMySQL(mysqlDAO);
             return redisDAO.get(redisKey, NewsHistory.class);
         }
+        */
+
         // 获取数据
-        List<Map<String, String>> res = hbaseDAO.getData(TABLE_NAME, singleColumnValueFilter);
+        List<Map<String, String>> res = hbaseDAO.getData(TABLE_NAME, startRowKey, endRowKey);
 
         // 结束查询，记录时间
         logger.stop();
@@ -95,7 +106,10 @@ public class NewsService {
 
 
         logger.writeToMySQL(mysqlDAO);
+        /*
         redisDAO.set(redisKey, newsHistory);
+
+         */
 
 
         return newsHistory;

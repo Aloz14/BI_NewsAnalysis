@@ -4,13 +4,18 @@ import org.bi.queryserver.DAO.MySQLDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 public class PerformanceLogger {
     private long startTime;
     private long endTime;
     private String sqlContent;
+    private Timestamp triggerTime;
 
     public void start() {
         startTime = System.nanoTime();
+        triggerTime = Timestamp.valueOf(LocalDateTime.now());
     }
 
     public void stop() {
@@ -23,6 +28,10 @@ public class PerformanceLogger {
 
     public void setSqlContent(String sqlContent) {
         this.sqlContent = sqlContent;
+    }
+
+    public Timestamp getTriggerTime() {
+        return triggerTime;
     }
 
     public long getElapsedTimeInMilliseconds() {
@@ -38,9 +47,11 @@ public class PerformanceLogger {
         String TABLE_NAME = "sql_log";
         String OPERATION = "insert into";
 
+
         mysqlDAO.insert(
-                OPERATION + " " + TABLE_NAME + " (sql_content, time_spent) VALUES (?, ?);",
-                sqlContent, getElapsedTimeInMilliseconds()
+                OPERATION + " " + TABLE_NAME + " (sql_content, time_spent, sql_trigger_timestamp) " +
+                        "VALUES (?, ?, ?);",
+                sqlContent, getElapsedTimeInMilliseconds(), getTriggerTime()
         );
     }
 
