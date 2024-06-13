@@ -12,7 +12,7 @@ public class NewsControllerTest {
 
     @Test
     public void testGetNewsHistoty() throws Exception {
-        newsController.getNewsHistory("N10456");
+        newsController.getNewsHistory("N100155");
     }
 
     @Test

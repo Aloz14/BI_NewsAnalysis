@@ -4,6 +4,12 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 冗余的数据结构
+ * 可能弃用
+ *
+ */
+@Deprecated
 public class NewsHistory {
     private String newsID;
     private List<Exposure> exposures;
@@ -32,5 +38,13 @@ public class NewsHistory {
 
     public boolean addExposure(Exposure e) {
         return exposures.add(e);
+    }
+
+    @Override
+    public String toString() {
+        return "NewsHistory{" +
+                "newsID='" + newsID + '\'' +
+                ", exposures=" + exposures +
+                '}';
     }
 }

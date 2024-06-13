@@ -4,6 +4,13 @@ package org.bi.queryserver.Domain;
 import java.time.Instant;
 import java.util.Objects;
 
+
+/**
+ * 冗余的数据结构
+ * 可能弃用
+ *
+ */
+@Deprecated
 public class Exposure {
     Instant exposureTime;
     Integer dwellTime;

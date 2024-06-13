@@ -1,12 +1,10 @@
 package org.bi.queryserver.Service;
 
 
-import org.apache.hadoop.hbase.CompareOperator;
-import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 import org.bi.queryserver.DAO.HBaseDAO;
 import org.bi.queryserver.DAO.MySQLDAO;
 import org.bi.queryserver.DAO.RedisDAO;
-import org.bi.queryserver.Domain.NewsHistory;
+import org.bi.queryserver.Domain.Clicks;
 import org.bi.queryserver.Domain.NewsInfo;
 import org.bi.queryserver.Utils.PerformanceLogger;
 import org.bi.queryserver.Utils.TimeUtils;
@@ -14,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,21 +30,25 @@ public class NewsService {
     RedisDAO redisDAO;
 
     /**
-     * 获取历史数据 TBDTBDTBD
+     * 单个新闻生命周期的查询，Archived
      * @param newsID
      * @return NewsHistory
      * @throws Exception
      */
-    public NewsHistory getNewsHistory(String newsID) throws Exception {
+    public List<Clicks> getNewsHistory(String newsID,
+                                       String startTime,
+                                       String endTime) throws Exception {
+
         final String TABLE_NAME = "news_clicks";
         final String CF_NAME = "info";
         final String COL_NAME_NEWS_ID = "news_id";
         final String COL_NAME_EXPOSURETIME = "exposure_time";
         final String COL_NAME_DWELLTIME = "dwelltime";
-        String startTime = "2019-06-13 00:00:00";
-        String endTime = "2019-07-13 23:59:59";
-        String startRowKey = newsID + startTime;
-        String endRowKey = newsID + endTime;
+
+        final String START_ROW_KEY = newsID + startTime;
+        final String END_ROW_KEY = newsID + endTime;
+
+        final int SEG_NUM = 20;
 
 
         /*
@@ -61,12 +65,14 @@ public class NewsService {
 
          */
 
-        // 启动性能记录
+        // 创建性能记录器
         PerformanceLogger logger = new PerformanceLogger();
+
         // 创建StringBuilder对象用于记录查询内容
         StringBuilder queryInfo = new StringBuilder();
         queryInfo.append("SELECT * FROM ").append(TABLE_NAME).append(" WHERE ")
                 .append(CF_NAME).append(":").append(COL_NAME_NEWS_ID).append(" = '").append(newsID).append("';\n");
+
         // 将查询内容记录到查询信息中
         queryInfo.append("Query details:\n");
         queryInfo.append("  - Table: ").append(TABLE_NAME).append("\n");
@@ -79,7 +85,9 @@ public class NewsService {
 
         logger.start();
 
-        /*
+        /* Redis TBD
+
+
         final String redisKey = TABLE_NAME + ":" + newsID;
         if(redisDAO.exists(redisKey)) {
             logger.stop();
@@ -88,31 +96,60 @@ public class NewsService {
         }
         */
 
-        // 获取数据
-        List<Map<String, String>> res = hbaseDAO.getData(TABLE_NAME, startRowKey, endRowKey);
+        // 获取数据，范围查询，依据为RowKey
+        List<Map<String, String>> res = hbaseDAO.getData(
+                TABLE_NAME,
+                START_ROW_KEY,
+                END_ROW_KEY
+        );
 
         // 结束查询，记录时间
         logger.stop();
 
-        // 待返回的newsHistory
-        NewsHistory newsHistory = new NewsHistory(newsID);
+
+        // 时间节点和对应计数器
+        // clicks: 最终返回的结果，为时间戳以及对应的点击量
+        List<Clicks> clicks = new ArrayList<>();
+        // instants： 存储切分后的时间节点
+        List<Instant> instants = TimeUtils.splitInstants(startTime, endTime, SEG_NUM);
+        // clickCounts： Map, 计数器
+        Map<Instant, Integer> clickCounts = new HashMap<>();
+        for (Instant instant : instants) {
+            clickCounts.put(instant, 0);
+        }
 
         // 只提取出曝光时间节点和对应曝光时长
         for (Map<String, String> row : res) {
-            Instant exposureTime = TimeUtils.StringToInstant(row.get(CF_NAME + ":" + COL_NAME_EXPOSURETIME));
-            Integer dwellTime = Integer.parseInt(row.get(CF_NAME + ":" + COL_NAME_DWELLTIME));
-            newsHistory.addExposure(exposureTime, dwellTime);
+            Instant exposureTime = TimeUtils.stringToInstant(row.get(CF_NAME + ":" + COL_NAME_EXPOSURETIME));
+
+            for (int i = 0; i < instants.size() - 1; i++) {
+                Instant startInstant = instants.get(i);
+                Instant endInstant = instants.get(i + 1);
+                if (exposureTime.isAfter(startInstant) && exposureTime.isBefore(endInstant)) {
+                    clickCounts.put(startInstant, clickCounts.get(startInstant) + 1);
+                    break; // No need to check further
+                }
+            }
         }
 
 
-        logger.writeToMySQL(mysqlDAO);
-        /*
-        redisDAO.set(redisKey, newsHistory);
+        // 存储到对象当中
+        for (Instant instant : instants) {
+            clicks.add(
+                    new Clicks(instant, clickCounts.get(instant))
+            );
+        }
 
+        // 查询记录日志
+        logger.writeToMySQL(mysqlDAO);
+
+
+        /* Redis TBD
+
+        redisDAO.set(redisKey, newsHistory);
          */
 
-
-        return newsHistory;
+        return clicks;
     }
 
     /**
@@ -129,7 +166,6 @@ public class NewsService {
         final String COL_NAME_TOPIC = "topic";
         final String COL_NAME_HEADLINE = "headline";
         final String COL_NAME_NEWSBODY = "news_body";
-
 
         // 性能记录
         PerformanceLogger logger = new PerformanceLogger();
@@ -149,8 +185,9 @@ public class NewsService {
         logger.setSqlContent(queryInfo.toString());
         logger.start();
 
-
         /* 无需再使用Redis优化
+
+
         final String redisKey = TABLE_NAME + ":" + newsID;
         // 若redis中存在，则直接返回
         if (redisDAO.exists(redisKey)) {
@@ -176,6 +213,7 @@ public class NewsService {
 
 
         logger.writeToMySQL(mysqlDAO);
+
         NewsInfo newsInfo = new NewsInfo(
                 newsID,
                 category,
@@ -183,6 +221,7 @@ public class NewsService {
                 headline,
                 newsBody
         );
+
         return newsInfo;
     }
 
