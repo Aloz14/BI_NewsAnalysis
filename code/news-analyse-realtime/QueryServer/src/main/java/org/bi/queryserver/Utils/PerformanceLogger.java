@@ -44,8 +44,8 @@ public class PerformanceLogger {
     }
 
     public void writeToMySQL(MySQLDAO mysqlDAO) {
-        String TABLE_NAME = "sql_log";
-        String OPERATION = "insert into";
+        final String TABLE_NAME = "sql_log";
+        final String OPERATION = "insert into";
 
 
         mysqlDAO.insert(
