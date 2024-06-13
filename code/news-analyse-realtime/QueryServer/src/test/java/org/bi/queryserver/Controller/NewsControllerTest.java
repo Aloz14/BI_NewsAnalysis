@@ -20,4 +20,6 @@ public class NewsControllerTest {
         newsController.getNewsInfo("N10789");
     }
 
+
+
 }

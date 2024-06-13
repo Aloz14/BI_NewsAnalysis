@@ -32,12 +32,14 @@ public class NewsService {
     /**
      * 单个新闻生命周期的查询，Archived
      * @param newsID
-     * @return NewsHistory
+     * @return List
      * @throws Exception
      */
     public List<Clicks> getNewsHistory(String newsID,
                                        String startTime,
                                        String endTime) throws Exception {
+
+        // 加入空值处理
 
         final String TABLE_NAME = "news_clicks";
         final String CF_NAME = "info";
@@ -159,6 +161,9 @@ public class NewsService {
      * @throws Exception
      */
     public NewsInfo getNewsInfo(String newsID) throws Exception {
+        if (newsID == null)
+            return null;
+
         final String TABLE_NAME = "news_info";
         final String CF_NAME = "info";
         final String COL_NAME_NEWS_ID = "news_id";
@@ -223,6 +228,37 @@ public class NewsService {
         );
 
         return newsInfo;
+    }
+
+
+    /**
+     * 轻量级的获取新闻种类
+     *
+     * @param newsID
+     * @return String
+     * @throws Exception
+     */
+    public String getNewsCategory(String newsID) throws Exception {
+
+        if(newsID == null)
+            return null;
+
+        final String TABLE_NAME = "news_info";
+        final String CF_NAME = "info";
+        final String COL_NAME_NEWS_ID = "news_id";
+        final String COL_NAME_CATEGORY = "category";
+
+        final String redisKey = newsID + ":" + COL_NAME_CATEGORY;
+        if (redisDAO.exists(redisKey)) {
+            return redisDAO.get(redisKey, String.class);
+        }
+
+        // 获取数据
+        Map<String, String> res = hbaseDAO.getData(TABLE_NAME, newsID);
+        String category = res.get(CF_NAME + ":" + COL_NAME_CATEGORY);
+        redisDAO.set(redisKey, category);
+
+        return category;
     }
 
 }

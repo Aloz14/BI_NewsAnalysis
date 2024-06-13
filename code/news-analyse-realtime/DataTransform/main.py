@@ -10,7 +10,7 @@ os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka
 
 KAFKA_HOST = "43.142.45.216"
 KAFKA_PORT = 9092
-KAFKA_SUBSCRIBE_TOPIC = "RAWLOG"
+KAFKA_SUBSCRIBE_TOPIC = "RAW"
 
 HBASE_HOST = "122.51.75.129"
 HBASE_PORT = 9090
@@ -73,7 +73,7 @@ def write_to_hbase(df, connection):
     table = connection.table(USER_HISTORY_TNAME)        
     # put user_id, news_id, start_time, dwelltime into hbase
     for news_id, dwelltime in zip(cur_positive_clicks, cur_dwelltime):
-        table.put(user_id.encode() + news_id.encode() + str(cur_start_time).encode(), 
+        table.put(user_id.encode() + str(cur_start_time).encode(), 
                   {USER_HISTORY_CF+":"+USER_HISTORY_KEYS[0]: user_id.encode(),
                    USER_HISTORY_CF+":"+USER_HISTORY_KEYS[1]: news_id.encode(),
                    USER_HISTORY_CF+":"+USER_HISTORY_KEYS[2]: str(cur_start_time).encode(),
@@ -81,7 +81,7 @@ def write_to_hbase(df, connection):
                    USER_HISTORY_CF+":"+USER_HISTORY_KEYS[4]: str(dwelltime).encode()})
         
     for news_id, dwelltime in zip(cur_negative_clicks, cur_dwelltime):
-        table.put(user_id.encode() + news_id.encode() + str(cur_start_time).encode(), 
+        table.put(user_id.encode() + str(cur_start_time).encode(), 
                   { USER_HISTORY_CF+":"+USER_HISTORY_KEYS[0]: user_id.encode(),
                     USER_HISTORY_CF+":"+USER_HISTORY_KEYS[1]: news_id.encode(),
                     USER_HISTORY_CF+":"+USER_HISTORY_KEYS[2]: str(cur_start_time).encode(),
@@ -90,7 +90,7 @@ def write_to_hbase(df, connection):
     
     # history visits
     for news_id, dwelltime, exposure_time in zip(history_news_clicks, history_dwelltimes, history_exposure_times):
-        table.put(user_id.encode() + news_id.encode() + str(exposure_time).encode(), 
+        table.put(user_id.encode() + str(exposure_time).encode(), 
                   {USER_HISTORY_CF+":"+USER_HISTORY_KEYS[0]: user_id.encode(),
                    USER_HISTORY_CF+":"+USER_HISTORY_KEYS[1]: news_id.encode(),
                    USER_HISTORY_CF+":"+USER_HISTORY_KEYS[2]: str(exposure_time).encode(),
