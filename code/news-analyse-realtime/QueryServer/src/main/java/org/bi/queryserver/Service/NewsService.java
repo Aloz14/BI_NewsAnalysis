@@ -270,4 +270,8 @@ public class NewsService {
         return category;
     }
 
+    public String getNewsTrend(String category, String startTime, String endTime) {
+
+        return "";
+    }
 }

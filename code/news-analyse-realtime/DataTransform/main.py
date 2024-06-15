@@ -28,12 +28,21 @@ USER_HISTORY_KEYS = [ "user_id",
                       "exposure_time",
                       "is_clicked",
                       "dwelltime"]
-
+CATEGORY_CLICKS_KEYS =[ "news_id",
+                        "exposure_time",
+                        "category"]
+NEWS_INFO_KEYS=[
+    "category"
+]
 NEWS_CLICKS_CF = "info"
 USER_HISTORY_CF = "info"
+CATEGORY_CLICKS_CF = "info"
+NEWS_INFO_CF = "info"
 
 NEWS_CLICKS_TNAME = "news_clicks"
 USER_HISTORY_TNAME = "user_history"
+CATEGORY_CLICKS_TNAME ="category_clicks"
+NEWS_INFO_TNAME="news_info"
 
 def create_hbase_connection(host, port):
     connection = happybase.Connection(host=host, port=port)
@@ -69,7 +78,23 @@ def write_to_hbase(df, connection):
                   {NEWS_CLICKS_CF+":"+NEWS_CLICKS_KEYS[0]: news_id.encode(),
                    NEWS_CLICKS_CF+":"+NEWS_CLICKS_KEYS[1]: str(exposure_time).encode(),
                    NEWS_CLICKS_CF+":"+NEWS_CLICKS_KEYS[2]: str(dwelltime).encode()})
-                
+    
+    table = connection.table(CATEGORY_CLICKS_TNAME)
+    # get category from news_info table
+    news_info_table=connection.table(NEWS_INFO_TNAME)
+    # put news_id,exposure_time,category into hbase
+    for news_id,exposure_time in zip(history_news_clicks,history_exposure_times):
+        # get category
+        row_key = news_id.encode()
+        column = NEWS_INFO_CF+":"+NEWS_INFO_KEYS[0]
+        row = news_info_table.row(row_key, columns=[column])
+        category_value = row.get(column.encode())
+        # Regular
+        table.put(news_id.encode()+str(exposure_time).encode(),
+                  {CATEGORY_CLICKS_CF+":"+CATEGORY_CLICKS_KEYS[0]:news_id.encode(),
+                   CATEGORY_CLICKS_CF+":"+CATEGORY_CLICKS_KEYS[1]:str(exposure_time).encode(),
+                   CATEGORY_CLICKS_CF+":"+CATEGORY_CLICKS_KEYS[2]:str(category_value).encode()})
+
     table = connection.table(USER_HISTORY_TNAME)        
     # put user_id, news_id, start_time, dwelltime into hbase
     for news_id, dwelltime in zip(cur_positive_clicks, cur_dwelltime):
