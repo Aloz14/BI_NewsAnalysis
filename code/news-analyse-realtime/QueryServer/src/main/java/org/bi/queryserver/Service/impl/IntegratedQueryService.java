@@ -81,16 +81,16 @@ public class IntegratedQueryService implements IIntegratedQueryService {
         }
 
         // 目标新闻ID集合
-        Set<String> newsIDSet = null;
+        Set<String> newsIDSet = new HashSet<>();
 
         if (userIDFilterSet.isEmpty() && categoryFilterSet.isEmpty()) {
             // 所有新闻点击记录，过于庞大，暂且不考虑
         } else if (categoryFilterSet.isEmpty()) {
-            newsIDSet = userIDFilterSet;
+            newsIDSet.addAll(userIDFilterSet);
         } else if (userIDFilterSet.isEmpty()) {
-            newsIDSet = categoryFilterSet;
+            newsIDSet.addAll(categoryFilterSet);
         } else {
-            newsIDSet = categoryFilterSet;
+            newsIDSet.addAll(categoryFilterSet);
             newsIDSet.retainAll(userIDFilterSet);
         }
 
