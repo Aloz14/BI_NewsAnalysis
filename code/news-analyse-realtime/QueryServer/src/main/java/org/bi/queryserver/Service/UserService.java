@@ -33,6 +33,17 @@ public class UserService {
     @Autowired
     NewsService newsService;
 
+
+    /**
+     * [Archived]
+     * 获取用户历史数据
+     *
+     * @param userID
+     * @param startTime
+     * @param endTime
+     * @return
+     * @throws Exception
+     */
     public List<Favor> getUserHistory(String userID,
                                String startTime,
                                String endTime) throws Exception {
