@@ -1,7 +1,7 @@
 package org.bi.queryserver.Controller;
 
 import org.bi.queryserver.Domain.Favor;
-import org.bi.queryserver.Service.UserService;
+import org.bi.queryserver.Service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

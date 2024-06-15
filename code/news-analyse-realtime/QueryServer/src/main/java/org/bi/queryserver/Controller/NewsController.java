@@ -2,7 +2,7 @@ package org.bi.queryserver.Controller;
 
 import org.bi.queryserver.Domain.Clicks;
 import org.bi.queryserver.Domain.NewsInfo;
-import org.bi.queryserver.Service.NewsService;
+import org.bi.queryserver.Service.impl.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,4 +1,4 @@
-package org.bi.queryserver.Service;
+package org.bi.queryserver.Service.impl;
 
 
 import org.bi.queryserver.DAO.HBaseDAO;

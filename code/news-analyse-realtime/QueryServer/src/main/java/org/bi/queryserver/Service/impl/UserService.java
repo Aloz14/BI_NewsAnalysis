@@ -1,10 +1,9 @@
-package org.bi.queryserver.Service;
+package org.bi.queryserver.Service.impl;
 
 import org.bi.queryserver.DAO.HBaseDAO;
 import org.bi.queryserver.DAO.MySQLDAO;
 import org.bi.queryserver.DAO.RedisDAO;
 import org.bi.queryserver.Domain.Favor;
-import org.bi.queryserver.Utils.NewsCategories;
 import org.bi.queryserver.Utils.PerformanceLogger;
 import org.bi.queryserver.Utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
