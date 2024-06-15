@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserService {
@@ -72,12 +75,6 @@ public class UserService {
                 END_ROW_KEY
         );
 
-        // 结束查询，记录时间
-        logger.stop();
-
-        // 查询记录日志
-        logger.writeToMySQL(mysqlDAO);
-
 
         // favor: 一个Instant对应一个类别
         List<Favor> favors = new ArrayList<Favor>();
@@ -86,22 +83,51 @@ public class UserService {
             favors.add(new Favor(instant));
         }
 
-        // 此处性能需要优化
-        // 总的查询时间为139.0ms,然而响应时间为557ms，频繁的查询请求中，连接和处理占用了大部分时间
-        // 优化方向：使用多线程
+
+        // 启动线程池
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
         for (Map<String, String> row : res) {
-            String newsID = row.get(CF_NAME + ":" + COL_NAME_NEWS_ID);
-            Instant exposureTime = TimeUtils.stringToInstant(row.get(CF_NAME + ":" + COL_NAME_EXPOSURETIME));
-            String category = newsService.getNewsCategory(newsID);
-            for (int i = 0; i < instants.size() - 1; i++) {
-                Instant startInstant = instants.get(i);
-                Instant endInstant = instants.get(i + 1);
-                if (exposureTime.isAfter(startInstant) && exposureTime.isBefore(endInstant)) {
-                    favors.get(i).addCategoryCount(category);
-                    break;
+            executor.submit(() -> {
+                String newsID = row.get(CF_NAME + ":" + COL_NAME_NEWS_ID);
+                Instant exposureTime = TimeUtils.stringToInstant(row.get(CF_NAME + ":" + COL_NAME_EXPOSURETIME));
+                String category = null;
+                try {
+                    category = newsService.getNewsCategory(newsID);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            }
+
+                for (int i = 0; i < instants.size() - 1; i++) {
+                    Instant startInstant = instants.get(i);
+                    Instant endInstant = instants.get(i + 1);
+                    if (exposureTime.isAfter(startInstant) && exposureTime.isBefore(endInstant)) {
+                        synchronized (favors.get(i)) { // 确保线程安全
+                            favors.get(i).addCategoryCount(category);
+                        }
+                        break;
+                    }
+                }
+            });
         }
+
+        // 关闭线程池并等待所有任务完成
+        executor.shutdown();
+        try {
+            if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+
+
+        // 结束查询，记录时间
+        logger.stop();
+
+        // 查询记录日志
+        logger.writeToMySQL(mysqlDAO);
 
         return favors;
     }

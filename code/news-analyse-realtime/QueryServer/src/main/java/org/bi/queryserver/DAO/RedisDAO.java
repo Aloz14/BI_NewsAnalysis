@@ -4,18 +4,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 @Service
 public class RedisDAO {
     @Autowired
-    private Jedis jedis;
+    private JedisPool jedisPool;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     public void set(String key, Object value) throws Exception {
-        String jsonValue = objectMapper.writeValueAsString(value);
-        jedis.set(key, jsonValue);
+        try (Jedis jedis = jedisPool.getResource()) {
+            jedis.set(key.getBytes(), objectMapper.writeValueAsBytes(value));
+        }
     }
 
     /**
@@ -26,15 +28,24 @@ public class RedisDAO {
      * @throws Exception
      */
     public <T> T get(String key, Class<T> valueType) throws Exception {
-        String jsonValue = jedis.get(key);
-        return objectMapper.readValue(jsonValue, valueType);
+        try (Jedis jedis = jedisPool.getResource()) {
+            byte[] value = jedis.get(key.getBytes());
+            if (value == null) {
+                return null;
+            }
+            return objectMapper.readValue(value, valueType);
+        }
     }
 
     public void delete(String key) {
-        jedis.del(key);
+        try (Jedis jedis = jedisPool.getResource()) {
+            jedis.del(key.getBytes());
+        }
     }
 
     public boolean exists(String key) {
-        return jedis.exists(key);
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.exists(key.getBytes());
+        }
     }
 }

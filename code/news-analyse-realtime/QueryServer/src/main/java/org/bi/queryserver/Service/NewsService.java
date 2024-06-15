@@ -40,6 +40,14 @@ public class NewsService {
                                        String endTime) throws Exception {
 
         // 加入空值处理
+        /**
+         *
+         *
+         *
+         *
+         *
+         *
+         */
 
         final String TABLE_NAME = "news_clicks";
         final String CF_NAME = "info";
@@ -105,9 +113,6 @@ public class NewsService {
                 END_ROW_KEY
         );
 
-        // 结束查询，记录时间
-        logger.stop();
-
 
         // 时间节点和对应计数器
         // clicks: 最终返回的结果，为时间戳以及对应的点击量
@@ -141,6 +146,10 @@ public class NewsService {
                     new Clicks(instant, clickCounts.get(instant))
             );
         }
+
+
+        // 结束查询，记录时间
+        logger.stop();
 
         // 查询记录日志
         logger.writeToMySQL(mysqlDAO);
@@ -204,7 +213,7 @@ public class NewsService {
         // 获取数据
         Map<String, String> res = hbaseDAO.getData(TABLE_NAME, newsID);
 
-        logger.stop();
+
 
         String category = null,
                 topic = null,
@@ -216,7 +225,7 @@ public class NewsService {
         headline = res.get(CF_NAME + ":" + COL_NAME_HEADLINE);
         newsBody = res.get(CF_NAME + ":" + COL_NAME_NEWSBODY);
 
-
+        logger.stop();
         logger.writeToMySQL(mysqlDAO);
 
         NewsInfo newsInfo = new NewsInfo(
