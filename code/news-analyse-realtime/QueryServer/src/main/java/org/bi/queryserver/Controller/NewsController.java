@@ -36,7 +36,7 @@ public class NewsController {
     }
 
     @GetMapping("/trend/{category}/{startTime}/{endTime}")
-    public String Trend(@PathVariable String category,@PathVariable String startTime,@PathVariable String endTime){
+    public List<Clicks> Trend(@PathVariable String category,@PathVariable String startTime,@PathVariable String endTime){
         return newsService.getNewsTrend(category,startTime,endTime);
     }
 }
