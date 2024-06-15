@@ -13,6 +13,5 @@ public class NewsServiceTest {
     @Test
     public void testGetNewsCategory() throws Exception {
         String newsID = "N10";
-        System.out.println(newsService.getNewsCategory(newsID)); ;
     }
 }

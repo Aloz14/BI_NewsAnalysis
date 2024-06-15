@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface IIntegratedQueryService {
     public List<Clicks> integratedQuery(String[] userIDs,
-                                       String[] newsCategories,
-                                       String startTime,
-                                       String endTime,
-                                       int titleMinLen,
-                                       int titleMaxLen,
-                                       int bodyMinLen,
-                                       int bodyMaxLen);
+                                        String[] newsCategories,
+                                        String startTime,
+                                        String endTime,
+                                        int titleMinLen,
+                                        int titleMaxLen,
+                                        int bodyMinLen,
+                                        int bodyMaxLen) throws Exception;
 }

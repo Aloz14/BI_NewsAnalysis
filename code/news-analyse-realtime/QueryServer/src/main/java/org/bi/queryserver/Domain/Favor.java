@@ -8,7 +8,7 @@ public class Favor {
     private Instant timestamp;
     private String mostPopCategory;
     private int mostPopClicks;
-    private Map<String,Integer> categoryCounts;
+    private Map<String, Integer> categoryCounts;
 
     public Favor(Instant timestamp) {
         this.timestamp = timestamp;
@@ -41,12 +41,12 @@ public class Favor {
         }
     }
 
-    public Map<String,Integer> getCategoryCounts() {
+    public Map<String, Integer> getCategoryCounts() {
         return categoryCounts;
     }
 
     public int getMostPopClicks() {
-        if(mostPopClicks == 0) {
+        if (mostPopClicks == 0) {
             calMostPopCategory();
         }
         return mostPopClicks;
@@ -55,8 +55,7 @@ public class Favor {
     public void addCategoryCount(String category) {
         if (categoryCounts.containsKey(category)) {
             categoryCounts.put(category, categoryCounts.get(category) + 1);
-        }
-        else {
+        } else {
             categoryCounts.put(category, 1);
         }
     }

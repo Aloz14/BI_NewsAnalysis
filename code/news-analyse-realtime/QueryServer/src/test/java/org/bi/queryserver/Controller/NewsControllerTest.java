@@ -12,14 +12,13 @@ public class NewsControllerTest {
 
     @Test
     public void testGetNewsHistoty() throws Exception {
-        newsController.getNewsHistory("N100155");
+        newsController.getClicksHistory("N100155");
     }
 
     @Test
     public void testGetNewsInfo() throws Exception {
         newsController.getNewsInfo("N10789");
     }
-
 
 
 }

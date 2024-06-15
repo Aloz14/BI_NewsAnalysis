@@ -14,15 +14,19 @@ public class Clicks {
         this.clicks = clicks;
         this.timestamp = timestamp;
     }
+
     public int getClicks() {
         return clicks;
     }
+
     public void setClicks(int clicks) {
         this.clicks = clicks;
     }
+
     public Instant getTimestamp() {
         return timestamp;
     }
+
     public void setTimestamp(Instant timestamp) {
         this.timestamp = timestamp;
     }

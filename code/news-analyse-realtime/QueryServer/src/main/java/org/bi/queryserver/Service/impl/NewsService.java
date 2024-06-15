@@ -31,23 +31,14 @@ public class NewsService {
 
     /**
      * 单个新闻生命周期的查询，Archived
+     *
      * @param newsID
      * @return List
      * @throws Exception
      */
-    public List<Clicks> getNewsHistory(String newsID,
-                                       String startTime,
-                                       String endTime) throws Exception {
-
-        // 加入空值处理
-        /**
-         *
-         *
-         *
-         *
-         *
-         *
-         */
+    public List<Clicks> getClicksHistory(String newsID,
+                                         String startTime,
+                                         String endTime) throws Exception {
 
         final String TABLE_NAME = "news_clicks";
         final String CF_NAME = "info";
@@ -95,8 +86,7 @@ public class NewsService {
 
         logger.start();
 
-        /* Redis TBD
-
+        /* Redis
 
         final String redisKey = TABLE_NAME + ":" + newsID;
         if(redisDAO.exists(redisKey)) {
@@ -155,7 +145,7 @@ public class NewsService {
         logger.writeToMySQL(mysqlDAO);
 
 
-        /* Redis TBD
+        /* Redis
 
         redisDAO.set(redisKey, newsHistory);
          */
@@ -163,8 +153,10 @@ public class NewsService {
         return clicks;
     }
 
+
     /**
      * 获取新闻信息的接口，Archived
+     *
      * @param newsID
      * @return NewsInfo
      * @throws Exception
@@ -199,31 +191,21 @@ public class NewsService {
         logger.setSqlContent(queryInfo.toString());
         logger.start();
 
-        /* 无需再使用Redis优化
-
-
         final String redisKey = TABLE_NAME + ":" + newsID;
         // 若redis中存在，则直接返回
         if (redisDAO.exists(redisKey)) {
             logger.stop();
             logger.writeToMySQL(mysqlDAO);
             return redisDAO.get(redisKey, NewsInfo.class);
-        }*/
+        }
 
         // 获取数据
         Map<String, String> res = hbaseDAO.getData(TABLE_NAME, newsID);
 
-
-
-        String category = null,
-                topic = null,
-                headline = null,
-                newsBody = null;
-
-        category = res.get(CF_NAME + ":" + COL_NAME_CATEGORY);
-        topic = res.get(CF_NAME + ":" + COL_NAME_TOPIC);
-        headline = res.get(CF_NAME + ":" + COL_NAME_HEADLINE);
-        newsBody = res.get(CF_NAME + ":" + COL_NAME_NEWSBODY);
+        String category = res.get(CF_NAME + ":" + COL_NAME_CATEGORY),
+                topic = res.get(CF_NAME + ":" + COL_NAME_TOPIC),
+                headline = res.get(CF_NAME + ":" + COL_NAME_HEADLINE),
+                newsBody = res.get(CF_NAME + ":" + COL_NAME_NEWSBODY);
 
         logger.stop();
         logger.writeToMySQL(mysqlDAO);
@@ -236,20 +218,92 @@ public class NewsService {
                 newsBody
         );
 
+        redisDAO.set(redisKey, newsInfo);
+
         return newsInfo;
     }
 
 
     /**
+     * 根据用户ID获取用户访问过的新闻ID列表
+     *
+     * @param userID
+     * @param startTime
+     * @param endTime
+     * @return 新闻ID列表
+     * @throws Exception
+     */
+    public List<String> getClickedNewsIDsByUserID(String userID,
+                                                  String startTime,
+                                                  String endTime) throws Exception {
+        final String TABLE_NAME = "user_history";
+        final String CF_NAME = "info";
+        final String COL_NAME_USER_ID = "user_id";
+        final String COL_NAME_NEWS_ID = "news_id";
+        final String COL_NAME_EXPOSURETIME = "exposure_time";
+
+        final String START_ROW_KEY = userID + startTime;
+        final String END_ROW_KEY = userID + endTime;
+
+        // 获取数据，范围查询，依据为RowKey
+        List<Map<String, String>> res = hbaseDAO.getData(
+                TABLE_NAME,
+                START_ROW_KEY,
+                END_ROW_KEY
+        );
+
+        List<String> newsIDs = new ArrayList<>();
+
+        for (Map<String, String> row : res) {
+            String newsID = row.get(CF_NAME + ":" + COL_NAME_NEWS_ID);
+            newsIDs.add(newsID);
+        }
+
+        return newsIDs;
+    }
+
+    public List<String> getClickedNewsIDsByCategory(String category,
+                                                    String startTime,
+                                                    String endTime) throws Exception {
+        final String TABLE_NAME = "category_clicks";
+        final String CF_NAME = "info";
+        final String COL_NAME_CATEGORY = "category";
+        final String COL_NAME_NEWS_ID = "news_id";
+        final String COL_NAME_EXPOSURETIME = "exposure_time";
+
+        final String START_ROW_KEY = category + startTime;
+        final String END_ROW_KEY = category + endTime;
+
+        List<Map<String, String>> res = hbaseDAO.getData(
+                TABLE_NAME,
+                START_ROW_KEY,
+                END_ROW_KEY
+        );
+
+        List<String> newsIDs = new ArrayList<>();
+        for (Map<String, String> row : res) {
+            String newsID = row.get(CF_NAME + ":" + COL_NAME_NEWS_ID);
+            newsIDs.add(newsID);
+        }
+
+        return newsIDs;
+    }
+
+
+    /**
      * 轻量级的获取新闻种类
+     * 根据新闻ID查询新闻种类
+     * 似乎有些浪费
+     * 弃用
      *
      * @param newsID
      * @return String
      * @throws Exception
      */
+    @Deprecated
     public String getNewsCategory(String newsID) throws Exception {
 
-        if(newsID == null)
+        if (newsID == null)
             return null;
 
         final String TABLE_NAME = "news_info";

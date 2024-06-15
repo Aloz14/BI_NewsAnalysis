@@ -18,10 +18,10 @@ public class NewsController {
 
 
     @GetMapping("/history/{newsID}")
-    public List<Clicks> getNewsHistory(@PathVariable String newsID) throws Exception {
+    public List<Clicks> getClicksHistory(@PathVariable String newsID) throws Exception {
         String startTime = "2019-06-13 00:00:00";
         String endTime = "2019-07-13 23:59:59";
-        return newsService.getNewsHistory(newsID, startTime, endTime);
+        return newsService.getClicksHistory(newsID, startTime, endTime);
     }
 
     @GetMapping("/info/{newsID}")

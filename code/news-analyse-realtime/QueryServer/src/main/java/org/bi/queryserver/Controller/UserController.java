@@ -18,7 +18,7 @@ public class UserController {
     public List<Favor> getUserHistory(@PathVariable("userID") String userID) throws Exception {
         String startTime = "2019-06-13 00:00:00";
         String endTime = "2019-07-13 23:59:59";
-        return userService.getUserHistory(userID,startTime,endTime);
+        return userService.getUserHistory(userID, startTime, endTime);
     }
 
 

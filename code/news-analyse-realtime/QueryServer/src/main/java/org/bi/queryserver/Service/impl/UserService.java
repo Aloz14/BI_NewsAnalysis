@@ -43,8 +43,8 @@ public class UserService {
      * @throws Exception
      */
     public List<Favor> getUserHistory(String userID,
-                               String startTime,
-                               String endTime) throws Exception {
+                                      String startTime,
+                                      String endTime) throws Exception {
 
         final String TABLE_NAME = "user_history";
         final String CF_NAME = "info";
@@ -87,7 +87,7 @@ public class UserService {
 
         // favor: 一个Instant对应一个类别
         List<Favor> favors = new ArrayList<Favor>();
-        List<Instant> instants = TimeUtils.splitInstants(startTime,endTime,SEG_NUM);
+        List<Instant> instants = TimeUtils.splitInstants(startTime, endTime, SEG_NUM);
         for (Instant instant : instants) {
             favors.add(new Favor(instant));
         }
@@ -102,7 +102,7 @@ public class UserService {
                 Instant exposureTime = TimeUtils.stringToInstant(row.get(CF_NAME + ":" + COL_NAME_EXPOSURETIME));
                 String category = null;
                 try {
-                    category = newsService.getNewsCategory(newsID);
+                    category = newsService.getNewsInfo(newsID).getCategory();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -140,4 +140,6 @@ public class UserService {
 
         return favors;
     }
+
+
 }
