@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface IIntegratedQueryService {
     public List<Clicks> integratedQuery(List<String> userIDs,
-                                        String[] newsCategories,
+                                        List<String> newsCategories,
                                         String startTime,
                                         String endTime,
                                         int titleMinLen,
