@@ -19,6 +19,9 @@ public class NewsControllerTest {
     public void testGetNewsInfo() throws Exception {
         newsController.getNewsInfo("N10789");
     }
-
+    @Test
+    public void testGetCategory(){
+        newsController.Trend("news","2019-06-01 00:00:00","2019-07-01 00:00:00");
+    }
 
 }

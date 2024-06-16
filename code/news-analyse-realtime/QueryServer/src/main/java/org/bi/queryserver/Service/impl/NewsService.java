@@ -426,4 +426,130 @@ public class NewsService implements INewsService {
         return category;
     }
 
+    public List<Clicks> getNewsTrend(String category, String startTime, String endTime) {
+        // 加入空值处理
+        /**
+         *
+         *
+         *
+         *
+         *
+         *
+         */
+
+        final String TABLE_NAME = "category_clicks";
+        final String CF_NAME = "info";
+        final String COL_NAME_CATEGORY = "category";
+        final String COL_NAME_EXPOSURETIME = "exposure_time";
+        final String COL_NAME_NEWS_ID = "news_id";
+
+        final String START_ROW_KEY = category + startTime;
+        final String END_ROW_KEY = category + endTime;
+
+        final int SEG_NUM = 20;
+
+
+        /*
+        // 配置单列值过滤器
+        SingleColumnValueFilter singleColumnValueFilter = new SingleColumnValueFilter(
+                CF_NAME.getBytes(),             // 列族
+                COL_NAME_NEWS_ID.getBytes(),    // 列名
+                CompareOperator.EQUAL,
+                newsID.getBytes()
+        );
+
+        // 启用过滤
+        singleColumnValueFilter.setFilterIfMissing(true);
+
+         */
+
+        // 创建性能记录器
+        PerformanceLogger logger = new PerformanceLogger();
+
+        // 创建StringBuilder对象用于记录查询内容
+        StringBuilder queryInfo = new StringBuilder();
+        queryInfo.append("SELECT * FROM ").append(TABLE_NAME).append(" WHERE ")
+                .append(CF_NAME).append(":").append(COL_NAME_CATEGORY).append(" = '").append(category).
+        append(" AND START_ROW_KEY= ").append(START_ROW_KEY).append(" AND END_ROW_KEY= ")
+                .append(END_ROW_KEY).append("';\n");
+
+        // 将查询内容记录到查询信息中
+        queryInfo.append("Query details:\n");
+        queryInfo.append("  - Table: ").append(TABLE_NAME).append("\n");
+        queryInfo.append("  - Column Family: ").append(CF_NAME).append("\n");
+        queryInfo.append("  - Column Names: ").
+                append(COL_NAME_EXPOSURETIME).append(",").
+                append(COL_NAME_NEWS_ID).append("\n");
+
+        logger.setSqlContent(queryInfo.toString());
+
+        logger.start();
+
+        /* Redis TBD
+
+
+        final String redisKey = TABLE_NAME + ":" + newsID;
+        if(redisDAO.exists(redisKey)) {
+            logger.stop();
+            logger.writeToMySQL(mysqlDAO);
+            return redisDAO.get(redisKey, NewsHistory.class);
+        }
+        */
+
+        // 获取数据，范围查询，依据为RowKey
+        List<Map<String, String>> res = hbaseDAO.getData(
+                TABLE_NAME,
+                START_ROW_KEY,
+                END_ROW_KEY
+        );
+
+
+        // 时间节点和对应计数器
+        // clicks: 最终返回的结果，为时间戳以及对应的点击量
+        List<Clicks> clicks = new ArrayList<>();
+        // instants： 存储切分后的时间节点
+        List<Instant> instants = TimeUtils.splitInstants(startTime, endTime, SEG_NUM);
+        // clickCounts： Map, 计数器
+        Map<Instant, Integer> clickCounts = new HashMap<>();
+        for (Instant instant : instants) {
+            clickCounts.put(instant, 0);
+        }
+
+        // 只提取出曝光时间节点和对应曝光时长
+        for (Map<String, String> row : res) {
+            Instant exposureTime = TimeUtils.stringToInstant(row.get(CF_NAME + ":" + COL_NAME_EXPOSURETIME));
+
+            for (int i = 0; i < instants.size() - 1; i++) {
+                Instant startInstant = instants.get(i);
+                Instant endInstant = instants.get(i + 1);
+                if (exposureTime.isAfter(startInstant) && exposureTime.isBefore(endInstant)) {
+                    clickCounts.put(startInstant, clickCounts.get(startInstant) + 1);
+                    break;
+                }
+            }
+        }
+
+
+        // 存储到对象当中
+        for (Instant instant : instants) {
+            clicks.add(
+                    new Clicks(instant, clickCounts.get(instant))
+            );
+        }
+
+
+        // 结束查询，记录时间
+        logger.stop();
+
+        // 查询记录日志
+        logger.writeToMySQL(mysqlDAO);
+
+
+        /* Redis TBD
+
+        redisDAO.set(redisKey, newsHistory);
+         */
+
+        return clicks;
+    }
 }
