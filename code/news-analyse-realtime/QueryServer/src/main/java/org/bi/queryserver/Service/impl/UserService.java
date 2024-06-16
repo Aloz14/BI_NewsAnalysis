@@ -4,6 +4,7 @@ import org.bi.queryserver.DAO.HBaseDAO;
 import org.bi.queryserver.DAO.MySQLDAO;
 import org.bi.queryserver.DAO.RedisDAO;
 import org.bi.queryserver.Domain.Favor;
+import org.bi.queryserver.Service.IUserService;
 import org.bi.queryserver.Utils.PerformanceLogger;
 import org.bi.queryserver.Utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class UserService {
+public class UserService implements IUserService {
     @Autowired
     HBaseDAO hbaseDAO;
 
@@ -42,6 +43,7 @@ public class UserService {
      * @return
      * @throws Exception
      */
+    @Override
     public List<Favor> getUserHistory(String userID,
                                       String startTime,
                                       String endTime) throws Exception {

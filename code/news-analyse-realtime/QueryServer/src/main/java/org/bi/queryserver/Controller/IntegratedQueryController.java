@@ -1,12 +1,11 @@
 package org.bi.queryserver.Controller;
 
 import org.bi.queryserver.Domain.Clicks;
+import org.bi.queryserver.Domain.ReceiveDS;
 import org.bi.queryserver.Service.impl.IntegratedQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,8 +17,10 @@ public class IntegratedQueryController {
     @Autowired
     private IntegratedQueryService integratedQueryService;
 
-    @GetMapping("/test")
-    public List<Clicks> test() throws Exception {
+    @PostMapping("/test")
+    public List<Clicks> test(@RequestBody ReceiveDS receiveDS) throws Exception {
+        System.out.println("receiveDS.getEndTime()");
+
         String[] userIDs = {"U335175"};
         String[] categories = {};
         int titleMinLen = 0;

@@ -6,6 +6,7 @@ import org.bi.queryserver.DAO.MySQLDAO;
 import org.bi.queryserver.DAO.RedisDAO;
 import org.bi.queryserver.Domain.Clicks;
 import org.bi.queryserver.Domain.NewsInfo;
+import org.bi.queryserver.Service.INewsService;
 import org.bi.queryserver.Utils.PerformanceLogger;
 import org.bi.queryserver.Utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class NewsService {
+public class NewsService implements INewsService {
 
     @Autowired
     HBaseDAO hbaseDAO;
@@ -36,6 +37,7 @@ public class NewsService {
      * @return List
      * @throws Exception
      */
+    @Override
     public List<Clicks> getClicksHistory(String newsID,
                                          String startTime,
                                          String endTime) throws Exception {
@@ -161,6 +163,7 @@ public class NewsService {
      * @return NewsInfo
      * @throws Exception
      */
+    @Override
     public NewsInfo getNewsInfo(String newsID) throws Exception {
         if (newsID == null)
             return null;
@@ -233,6 +236,7 @@ public class NewsService {
      * @return 新闻ID列表
      * @throws Exception
      */
+    @Override
     public List<String> getClickedNewsIDsByUserID(String userID,
                                                   String startTime,
                                                   String endTime) throws Exception {
@@ -262,6 +266,7 @@ public class NewsService {
         return newsIDs;
     }
 
+    @Override
     public List<String> getClickedNewsIDsByCategory(String category,
                                                     String startTime,
                                                     String endTime) throws Exception {
@@ -300,6 +305,7 @@ public class NewsService {
      * @return String
      * @throws Exception
      */
+    @Override
     @Deprecated
     public String getNewsCategory(String newsID) throws Exception {
 
