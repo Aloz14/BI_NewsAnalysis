@@ -30,8 +30,10 @@ public class IntegratedQueryController {
         List<DataHelper> helpers=new ArrayList<>();
         for (Group group : groups) {
             List<String> userIDs=new ArrayList<>();
-            for (String userid : group.getUser_id()) {
-                userIDs.add(userid);
+            if(group.getUser_id()!=null) {
+                for (String userid : group.getUser_id()) {
+                    userIDs.add(userid);
+                }
             }
             String[] categories = {};
             int titleMinLen = 0;
