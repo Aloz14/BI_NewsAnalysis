@@ -4,15 +4,15 @@ public class NewsInfo {
     private String newsID;
     private String category;
     private String topic;
-    private String headline;
-    private String newsBody;
+    private int headlineLen;
+    private int newsBodyLen;
 
-    public NewsInfo(String newsID, String category, String topic, String headline, String newsBody) {
+    public NewsInfo(String newsID, String category, String topic, int headlineLen, int newsBodyLen){
         this.newsID = newsID;
         this.category = category;
         this.topic = topic;
-        this.headline = headline;
-        this.newsBody = newsBody;
+        this.headlineLen = headlineLen;
+        this.newsBodyLen = newsBodyLen;
     }
 
     public String getNewsID() {
@@ -39,20 +39,20 @@ public class NewsInfo {
         this.topic = topic;
     }
 
-    public String getHeadline() {
-        return headline;
+    public int getHeadlineLen() {
+        return headlineLen;
     }
 
-    public void setHeadline(String headline) {
-        this.headline = headline;
+    public void setHeadlineLen(int headlineLen) {
+        this.headlineLen = headlineLen;
     }
 
-    public String getNewsBody() {
-        return newsBody;
+    public int getNewsBodyLen() {
+        return newsBodyLen;
     }
 
-    public void setNewsBody(String newsBody) {
-        this.newsBody = newsBody;
+    public void setNewsBodyLen(int newsBodyLen) {
+        this.newsBodyLen = newsBodyLen;
     }
 
     @Override
@@ -61,8 +61,8 @@ public class NewsInfo {
                 "newsID='" + newsID + '\'' +
                 ", category='" + category + '\'' +
                 ", topic='" + topic + '\'' +
-                ", headline='" + headline + '\'' +
-                ", newsBody='" + newsBody + '\'' +
+                ", headlineLen=" + headlineLen +
+                ", newsBodyLen=" + newsBodyLen +
                 '}';
     }
 }

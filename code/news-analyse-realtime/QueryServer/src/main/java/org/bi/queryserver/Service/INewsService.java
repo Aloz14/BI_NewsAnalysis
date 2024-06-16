@@ -10,6 +10,8 @@ public interface INewsService {
                                   String startTime,
                                   String endTime) throws Exception;
 
+    List<NewsInfo> getNewsInfo(String[] newsIDs) throws Exception;
+    List<NewsInfo> getNewsInfo(List<String> newsIDs) throws Exception;
     NewsInfo getNewsInfo(String newsID) throws Exception;
 
     List<String> getClickedNewsIDsByUserID(String userID,

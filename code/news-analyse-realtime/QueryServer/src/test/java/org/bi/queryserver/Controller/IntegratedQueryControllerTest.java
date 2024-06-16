@@ -13,5 +13,6 @@ public class IntegratedQueryControllerTest {
 
     @Test
     public void test() throws Exception {
+        integratedQueryController.test();
     }
 }

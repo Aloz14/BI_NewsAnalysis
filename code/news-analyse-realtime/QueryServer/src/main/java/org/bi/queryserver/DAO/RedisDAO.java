@@ -1,10 +1,14 @@
 package org.bi.queryserver.DAO;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class RedisDAO {
@@ -49,4 +53,25 @@ public class RedisDAO {
             return jedis.exists(key.getBytes());
         }
     }
+
+    /**
+     * 一次性获取多个 key 对应的 value
+     * @param keys 要获取的 key 列表
+     * @return 对应的 value 列表
+     */
+    public List<String> mget(String... keys) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.mget(keys);
+        }
+    }
+
+    public <T> List<T> mget(Class<T> valueType,String... keys) throws JsonProcessingException {
+        List<String> values = mget(keys);
+        List<T> result = new ArrayList<>();
+        for (String value : values) {
+            result.add(objectMapper.readValue(value, valueType));
+        }
+        return result;
+    }
+
 }

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @CrossOrigin
 @RequestMapping("/intgr_query")
 public class IntegratedQueryController {
@@ -17,11 +17,9 @@ public class IntegratedQueryController {
     @Autowired
     private IntegratedQueryService integratedQueryService;
 
-    @PostMapping("/test")
-    public List<Clicks> test(@RequestBody ReceiveDS receiveDS) throws Exception {
-        System.out.println("receiveDS.getEndTime()");
-
-        String[] userIDs = {"U335175"};
+    @GetMapping("/test")
+    public List<Clicks> test() throws Exception {
+        String[] userIDs = {"U370050"};
         String[] categories = {};
         int titleMinLen = 0;
         int titleMaxLen = Integer.MAX_VALUE;

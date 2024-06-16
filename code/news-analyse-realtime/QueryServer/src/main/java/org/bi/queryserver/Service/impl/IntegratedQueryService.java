@@ -10,10 +10,11 @@ import org.bi.queryserver.Service.IIntegratedQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class IntegratedQueryService implements IIntegratedQueryService {
@@ -55,6 +56,8 @@ public class IntegratedQueryService implements IIntegratedQueryService {
         // 通过用户ID获取的点击过的新闻ID集合
         Set<String> userIDFilterSet = new HashSet<String>();
 
+
+
         for (String userID : userIDs) {
             List<String> newsIDs = newsService.getClickedNewsIDsByUserID(
                     userID,
@@ -65,6 +68,8 @@ public class IntegratedQueryService implements IIntegratedQueryService {
                 userIDFilterSet.add(newsID);
             }
         }
+
+
 
         // 通过种类获取的点击过的新闻ID集合
         Set<String> categoryFilterSet = new HashSet<>();
@@ -79,6 +84,7 @@ public class IntegratedQueryService implements IIntegratedQueryService {
                 categoryFilterSet.add(newsID);
             }
         }
+
 
         // 目标新闻ID集合
         Set<String> newsIDSet = new HashSet<>();
@@ -95,46 +101,93 @@ public class IntegratedQueryService implements IIntegratedQueryService {
         }
 
 
+
+        // 获取新闻信息的列表
+        List<String> newsIDs = new ArrayList<>(newsIDSet);
+        List<NewsInfo> newsInfos = newsService.getNewsInfo(newsIDs);
+
+        // 通过标题长度和内容长度进行筛选
+        for (NewsInfo newsInfo : newsInfos) {
+            if(newsInfo.getHeadlineLen() > titleMaxLen || newsInfo.getNewsBodyLen() > bodyMaxLen){
+                newsIDSet.remove(newsInfo.getNewsID());
+            }
+        }
+
+        /**
+        弃用代码，把多线程封装在getNewsInfo中
+
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
         // 通过标题长度和内容长度进行筛选
         for (String newsID : newsIDSet) {
-            NewsInfo newsInfo = newsService.getNewsInfo(newsID);
-            if (newsInfo != null) {
-                if (newsInfo.getHeadline().length()>titleMaxLen){
-                    newsIDSet.remove(newsID);
-                    continue;
+            executor.submit(() -> {
+                NewsInfo newsInfo = null;
+                try {
+                    newsInfo = newsService.getNewsInfo(newsID);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
 
-                if (newsInfo.getNewsBody().length()>bodyMaxLen){
-                    newsIDSet.remove(newsID);
+                if (newsInfo != null) {
+                    if (newsInfo.getHeadlineLen() > titleMaxLen) {
+                        newsIDSet.remove(newsID);
+                    }
+
+                    if (newsInfo.getNewsBodyLen() > bodyMaxLen) {
+                        newsIDSet.remove(newsID);
+                    }
                 }
-            }
+            });
         }
+        // 关闭线程池并等待所有任务完成
+        executor.shutdown();
+        try {
+            if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+         *
+         */
 
 
-        List<Clicks> res = null;
+
+
+        long st = System.currentTimeMillis();
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
         // 统计剩下新闻的点击量
         for (String newsID : newsIDSet) {
-            List<Clicks> newsClicks = newsService.getClicksHistory(
-                    newsID,
-                    startTime,
-                    endTime
-            );
-
-            if (res == null) {
-                res = newsClicks;
-            }
-            else{
-                for (int i = 0; i < res.size(); i++) {
-                    res.get(i).setClicks(
-                            res.get(i).getClicks() + newsClicks.get(i).getClicks()
+            executor.submit(() -> {
+                List<Clicks> newsClicks = null;
+                try {
+                    newsClicks = newsService.getClicksHistory(
+                            newsID,
+                            startTime,
+                            endTime
                     );
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
-            }
-
+            });
         }
 
+        executor.shutdown();
+        try {
+            if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+        long et = System.currentTimeMillis() - st;
+        System.out.println("Integrated query took " + et + " ms");
 
-        return res;
+
+        return new ArrayList<>();
     }
 
 

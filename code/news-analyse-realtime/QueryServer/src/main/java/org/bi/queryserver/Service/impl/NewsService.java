@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class NewsService implements INewsService {
@@ -143,7 +146,7 @@ public class NewsService implements INewsService {
         // 结束查询，记录时间
         logger.stop();
 
-        // 查询记录日志
+        // 记录查询日志
         logger.writeToMySQL(mysqlDAO);
 
 
@@ -217,8 +220,8 @@ public class NewsService implements INewsService {
                 newsID,
                 category,
                 topic,
-                headline,
-                newsBody
+                headline.length(),
+                newsBody.length()
         );
 
         redisDAO.set(redisKey, newsInfo);
@@ -226,6 +229,99 @@ public class NewsService implements INewsService {
         return newsInfo;
     }
 
+    @Override
+    public List<NewsInfo> getNewsInfo(String[] newsIDs) throws Exception{
+        final String TABLE_NAME = "news_info";
+        final String CF_NAME = "info";
+        final String COL_NAME_NEWS_ID = "news_id";
+        final String COL_NAME_CATEGORY = "category";
+        final String COL_NAME_TOPIC = "topic";
+        final String COL_NAME_HEADLINE = "headline";
+        final String COL_NAME_NEWSBODY = "news_body";
+
+        // 性能记录
+        PerformanceLogger logger = new PerformanceLogger();
+        StringBuilder queryInfo = new StringBuilder();
+        queryInfo.append("SELECT * FROM ").append(TABLE_NAME).append(" WHERE ")
+                .append(COL_NAME_NEWS_ID).append(" = '").append("newsIDs").append("';\n");
+        queryInfo.append("Query details:\n");
+        queryInfo.append("  - Table: ").append(TABLE_NAME).append("\n");
+        queryInfo.append("  - Column Family: ").append(CF_NAME).append("\n");
+        queryInfo.append("  - Column Name: ").
+                append(COL_NAME_NEWS_ID).append(",").
+                append(COL_NAME_CATEGORY).append(",").
+                append(COL_NAME_TOPIC).append(",").
+                append(COL_NAME_HEADLINE).append(",").
+                append(COL_NAME_NEWSBODY).append("\n");
+
+        logger.setSqlContent(queryInfo.toString());
+        logger.start();
+
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+        String[] redisKeys = new String[newsIDs.length];
+        int index = 0;
+        for (String newsID:newsIDs){
+            redisKeys[index++] = TABLE_NAME + ":" + newsID;
+        }
+
+
+
+
+        for (String newsID : newsIDs) {
+            final String redisKey = TABLE_NAME + ":" + newsID;
+            executor.submit(() -> {
+                if (!redisDAO.exists(redisKey)) {
+                    // 获取数据
+                    Map<String, String> res = hbaseDAO.getData(TABLE_NAME, newsID);
+
+                    String category = res.get(CF_NAME + ":" + COL_NAME_CATEGORY),
+                            topic = res.get(CF_NAME + ":" + COL_NAME_TOPIC),
+                            headline = res.get(CF_NAME + ":" + COL_NAME_HEADLINE),
+                            newsBody = res.get(CF_NAME + ":" + COL_NAME_NEWSBODY);
+
+                    NewsInfo newsInfo = new NewsInfo(
+                            newsID,
+                            category,
+                            topic,
+                            headline.length(),
+                            newsBody.length()
+                    );
+
+                    try {
+                        redisDAO.set(redisKey, newsInfo);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+        }
+        executor.shutdown();
+        try {
+            if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+
+        List<NewsInfo> newsInfos = redisDAO.mget(NewsInfo.class,redisKeys);
+
+        logger.stop();
+        logger.writeToMySQL(mysqlDAO);
+        return newsInfos;
+    }
+
+    @Override
+    public List<NewsInfo> getNewsInfo(List<String> newsIDs) throws Exception {
+        String[] newsIDArray = new String[newsIDs.size()];
+        int index = 0;
+        for (String newsID : newsIDs) {
+            newsIDArray[index++] = newsID;
+        }
+        return getNewsInfo(newsIDArray);
+    }
 
     /**
      * 根据用户ID获取用户访问过的新闻ID列表
