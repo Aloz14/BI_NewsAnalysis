@@ -55,10 +55,20 @@ public class Favor {
     public void addCategoryCount(String category) {
         if (categoryCounts.containsKey(category)) {
             categoryCounts.put(category, categoryCounts.get(category) + 1);
+            calMostPopCategory();
         } else {
             categoryCounts.put(category, 1);
+            calMostPopCategory();
         }
     }
 
-
+    @Override
+    public String toString() {
+        return "Favor{" +
+                "timestamp=" + timestamp +
+                ", mostPopCategory='" + mostPopCategory + '\'' +
+                ", mostPopClicks=" + mostPopClicks +
+                ", categoryCounts=" + categoryCounts +
+                '}';
+    }
 }

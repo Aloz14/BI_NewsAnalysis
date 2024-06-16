@@ -10,7 +10,12 @@ public class UserControllerTest {
     private UserController userController;
 
     @Test
-    public void testGetHistory() throws Exception {
-        userController.getUserHistory("U103269");
+    public void testGetUserFavors() throws Exception {
+        userController.getUserFavors("U103269");
+    }
+
+    @Test
+    public void testGetRecommendations() throws Exception {
+        userController.getRecommendations("U100515");
     }
 }
