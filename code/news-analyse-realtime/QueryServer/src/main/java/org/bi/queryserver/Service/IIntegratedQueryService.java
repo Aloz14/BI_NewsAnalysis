@@ -5,7 +5,7 @@ import org.bi.queryserver.Domain.Clicks;
 import java.util.List;
 
 public interface IIntegratedQueryService {
-    public List<Clicks> integratedQuery(String[] userIDs,
+    public List<Clicks> integratedQuery(List<String> userIDs,
                                         String[] newsCategories,
                                         String startTime,
                                         String endTime,
