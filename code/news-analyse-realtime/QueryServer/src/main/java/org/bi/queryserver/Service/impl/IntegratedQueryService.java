@@ -40,7 +40,7 @@ public class IntegratedQueryService implements IIntegratedQueryService {
      * @param bodyMinLen     = 0
      * @param bodyMaxLen
      */
-    public List<Clicks> integratedQuery(String[] userIDs,
+    public List<Clicks> integratedQuery(List<String> userIDs,
                                         String[] newsCategories,
                                         String startTime,
                                         String endTime,
