@@ -7,14 +7,15 @@ import org.bi.queryserver.DAO.RedisDAO;
 import org.bi.queryserver.Domain.Clicks;
 import org.bi.queryserver.Domain.NewsInfo;
 import org.bi.queryserver.Service.IIntegratedQueryService;
+import org.bi.queryserver.Utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class IntegratedQueryService implements IIntegratedQueryService {
@@ -51,6 +52,7 @@ public class IntegratedQueryService implements IIntegratedQueryService {
 
         // 按理来说应该是一开始有所有的News ID,然后慢慢筛选，再统计点击量
         // 但这样的响应时间可能会有些过于大了，因此限制必须要选择
+        final int SEG_NUM = 20;
 
 
         // 通过用户ID获取的点击过的新闻ID集合
@@ -158,6 +160,15 @@ public class IntegratedQueryService implements IIntegratedQueryService {
         long st = System.currentTimeMillis();
         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
+
+        List<Clicks> result = new ArrayList<>();
+        List<Instant> instants = TimeUtils.splitInstants(startTime, endTime, SEG_NUM);
+        for (Instant instant : instants) {
+            result.add(
+                    new Clicks(instant, 0)
+            );
+        }
+
         // 统计剩下新闻的点击量
         for (String newsID : newsIDSet) {
             executor.submit(() -> {
@@ -171,6 +182,17 @@ public class IntegratedQueryService implements IIntegratedQueryService {
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
+
+                synchronized(new Object()){
+                    int index = 0;
+                    for(;index < newsClicks.size(); index++){
+                        result.get(index).setHit(
+                                newsClicks.get(index).getHit()
+                                        +result.get(index).getHit());
+                    }
+                }
+
+
             });
         }
 
@@ -187,7 +209,7 @@ public class IntegratedQueryService implements IIntegratedQueryService {
         System.out.println("Integrated query took " + et + " ms");
 
 
-        return new ArrayList<>();
+        return result;
     }
 
 

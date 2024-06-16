@@ -5,8 +5,9 @@ import java.util.List;
 public class Group {
     //List<String> newsTheme;
     //List<String> title_length;
-    //List<String> news_length;
+    List<String> news_length;
     List<String> user_id;
+    //List<String> titleLength;
     //List<String> news_id;
 
 //    @Override
@@ -36,13 +37,13 @@ public class Group {
 //        this.title_length = title_length;
 //    }
 //
-//    public List<String> getNews_length() {
-//        return news_length;
-//    }
-//
-//    public void setNews_length(List<String> news_length) {
-//        this.news_length = news_length;
-//    }
+    public List<String> getNews_length() {
+        return news_length;
+    }
+
+    public void setNews_length(List<String> news_length) {
+        this.news_length = news_length;
+    }
 
     public Group() {
     }

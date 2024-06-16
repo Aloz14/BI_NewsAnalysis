@@ -1,12 +1,25 @@
 package org.bi.queryserver.Domain;
 
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class Data {
     public String start_time;
     public String end_time;
     public String getStart_time() {
-        return start_time;
+        String inputDate = start_time;
+        // 定义输入格式
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+        // 解析输入日期字符串
+        ZonedDateTime zonedDateTime = ZonedDateTime.parse(inputDate, inputFormatter);
+        // 转换为LocalDateTime
+        LocalDateTime localDateTime = zonedDateTime.toLocalDateTime();
+        // 定义输出格式
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String outputDate = localDateTime.format(outputFormatter);
+        return outputDate;
     }
 
     public Data() {
@@ -23,7 +36,17 @@ public class Data {
     }
 
     public String getEnd_time() {
-        return end_time;
+        String inputDate = end_time;
+        // 定义输入格式
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+        // 解析输入日期字符串
+        ZonedDateTime zonedDateTime = ZonedDateTime.parse(inputDate, inputFormatter);
+        // 转换为LocalDateTime
+        LocalDateTime localDateTime = zonedDateTime.toLocalDateTime();
+        // 定义输出格式
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String outputDate = localDateTime.format(outputFormatter);
+        return outputDate;
     }
 
     public void setEnd_time(String end_time) {
