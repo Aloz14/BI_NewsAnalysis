@@ -31,6 +31,7 @@ public class IntegratedQueryController {
         List<Group> groups=data.getData().getGroup();
         List<DataHelper> helpers=new ArrayList<>();
         GroupHelper groupHelper;
+        List<String> categories = new ArrayList<>();
         int titleMinLen = 0;
         int titleMaxLen = Integer.MAX_VALUE;
         int bodyMinLen = 0;
@@ -49,6 +50,23 @@ public class IntegratedQueryController {
                     titleMaxLen=Math.min(Integer.valueOf(len),Integer.valueOf(titleMaxLen));
                 }
             }
+            if(group.getNews_id()==null&&group.getTitle_length()==null&&
+            group.getUser_id()==null&&group.getNews_length()==null) {
+                if (group.getNews_theme() != null) {
+                    for (String category : group.getNews_theme()) {
+                        List<Clicks> clicks = newsService.getCategoryTrend(category, data.getData().getStart_time(), data.getData().getEnd_time());
+                        DataHelper dataHelper = new DataHelper(clicks);
+                        helpers.add(dataHelper);
+                    }
+                    break;
+                }
+            }else{
+                if (group.getNews_theme() != null) {
+                    for (String category : group.getNews_theme()) {
+                        categories.add(category);
+                    }
+                }
+            }
             if(group.getNews_id()!=null){
                 for (String newsID : group.getNews_id()) {
                     List<Clicks> clicks = newsService.getClicksHistory(newsID, data.getData().getStart_time(), data.getData().getEnd_time());
@@ -57,20 +75,13 @@ public class IntegratedQueryController {
                 }
                 break;
             }
-            if(group.getNews_theme()!=null){
-                for (String category : group.getNews_theme()) {
-                    List<Clicks> clicks = newsService.getCategoryTrend(category,data.getData().getStart_time(), data.getData().getEnd_time());
-                    DataHelper dataHelper = new DataHelper(clicks);
-                    helpers.add(dataHelper);
-                }
-                break;
-            }
+
             if(group.getUser_id()!=null) {
                 for (String userid : group.getUser_id()) {
                     userIDs.add(userid);
                 }
             }
-            String[] categories = {};
+
 
             List<Clicks> clicks = integratedQueryService.integratedQuery(
                     userIDs,
