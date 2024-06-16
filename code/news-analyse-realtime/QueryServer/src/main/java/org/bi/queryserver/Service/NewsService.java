@@ -364,12 +364,9 @@ public class NewsService {
             for (int i = 0; i < instants.size() - 1; i++) {
                 Instant startInstant = instants.get(i);
                 Instant endInstant = instants.get(i + 1);
-                if(exposureTime.isBefore(startInstant))
-                    continue;
-                if(exposureTime.isAfter(endInstant))
-                    break;
                 if (exposureTime.isAfter(startInstant) && exposureTime.isBefore(endInstant)) {
                     clickCounts.put(startInstant, clickCounts.get(startInstant) + 1);
+                    break;
                 }
             }
         }
