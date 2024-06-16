@@ -44,6 +44,7 @@ public class NewsService implements INewsService {
     @Autowired
     RedisDAO redisDAO;
 
+    /*
     @Autowired
     JavaSparkContext jsc;
 
@@ -90,6 +91,7 @@ public class NewsService implements INewsService {
         // 启动 Spark Streaming
         streamingContext.start();
     }
+     */
 
 
 

@@ -73,45 +73,34 @@ public class IntegratedQueryService implements IIntegratedQueryService {
 
 
 
-        // 通过种类获取的点击过的新闻ID集合
-        Set<String> categoryFilterSet = new HashSet<>();
-        for (String category : newsCategories) {
-            List<String> newsIDs = newsService.getClickedNewsIDsByCategory(
-                    category,
-                    startTime,
-                    endTime
-            );
-
-            for (String newsID : newsIDs) {
-                categoryFilterSet.add(newsID);
-            }
-        }
-
-
         // 目标新闻ID集合
         Set<String> newsIDSet = new HashSet<>();
 
-        if (userIDFilterSet.isEmpty() && categoryFilterSet.isEmpty()) {
-            // 所有新闻点击记录，过于庞大，暂且不考虑
-        } else if (categoryFilterSet.isEmpty()) {
-            newsIDSet.addAll(userIDFilterSet);
-        } else if (userIDFilterSet.isEmpty()) {
-            newsIDSet.addAll(categoryFilterSet);
-        } else {
-            newsIDSet.addAll(categoryFilterSet);
-            newsIDSet.retainAll(userIDFilterSet);
-        }
-
+        newsIDSet.addAll(userIDFilterSet);
 
 
         // 获取新闻信息的列表
         List<String> newsIDs = new ArrayList<>(newsIDSet);
         List<NewsInfo> newsInfos = newsService.getNewsInfo(newsIDs);
 
-        // 通过标题长度和内容长度进行筛选
         if(newsInfos!=null) {
             for (NewsInfo newsInfo : newsInfos) {
+                // 通过标题长度和内容长度进行筛选
                 if (newsInfo.getHeadlineLen() > titleMaxLen || newsInfo.getNewsBodyLen() > bodyMaxLen) {
+                    newsIDSet.remove(newsInfo.getNewsID());
+                    continue;
+                }
+
+                // 通过种类筛选
+                boolean isHit = false;
+                for(String newsCategory:newsCategories) {
+                    if(newsInfo.getCategory().equals(newsCategory)) {
+                        isHit = true;
+                        break;
+                    }
+                }
+
+                if(!isHit) {
                     newsIDSet.remove(newsInfo.getNewsID());
                 }
             }

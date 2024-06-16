@@ -16,6 +16,7 @@ public class SparkConfig {
     @Value("${spark.master}")
     private String master;
 
+    /*
     @Bean
     @ConditionalOnMissingBean(SparkConf.class)
     public SparkConf sparkConf() {
@@ -29,6 +30,7 @@ public class SparkConfig {
     public JavaSparkContext JavaSparkContext() {
         return new JavaSparkContext(sparkConf());
     }
+     */
 
 
 }
