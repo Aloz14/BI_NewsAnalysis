@@ -426,7 +426,10 @@ public class NewsService implements INewsService {
         return category;
     }
 
-    public List<Clicks> getNewsTrend(String category, String startTime, String endTime) {
+    @Override
+    public List<Clicks> getCategoryTrend(String category,
+                                         String startTime,
+                                         String endTime) {
         // 加入空值处理
         /**
          *
@@ -549,7 +552,6 @@ public class NewsService implements INewsService {
 
         redisDAO.set(redisKey, newsHistory);
          */
-
         return clicks;
     }
 }

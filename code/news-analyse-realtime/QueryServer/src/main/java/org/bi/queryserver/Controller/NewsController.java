@@ -35,8 +35,12 @@ public class NewsController {
         return "test";
     }
 
-    @GetMapping("/trend/{category}/{startTime}/{endTime}")
-    public List<Clicks> Trend(@PathVariable String category,@PathVariable String startTime,@PathVariable String endTime){
-        return newsService.getNewsTrend(category,startTime,endTime);
+    @GetMapping("/trend/{category}")
+    public List<Clicks> getCategoryTrend(@PathVariable String category){
+        String startTime = "2019-06-13 00:00:00";
+        String endTime = "2019-07-13 23:59:59";
+        return newsService.getCategoryTrend(category,startTime,endTime);
     }
+
+
 }

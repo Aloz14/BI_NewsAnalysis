@@ -21,7 +21,7 @@ public class NewsControllerTest {
     }
     @Test
     public void testGetCategory(){
-        newsController.Trend("news","2019-06-01 00:00:00","2019-07-01 00:00:00");
+        newsController.getCategoryTrend("news");
     }
 
 }

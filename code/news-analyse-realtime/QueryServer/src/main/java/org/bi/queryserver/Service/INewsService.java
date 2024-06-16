@@ -22,6 +22,10 @@ public interface INewsService {
                                              String startTime,
                                              String endTime) throws Exception;
 
+    List<Clicks> getCategoryTrend(String category,
+                                  String startTime,
+                                  String endTime);
+
     @Deprecated
     String getNewsCategory(String newsID) throws Exception;
 }
