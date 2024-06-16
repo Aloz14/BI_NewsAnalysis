@@ -19,9 +19,12 @@ HBASE_PORT = 9090
 # spark and hbase integration is not ELEGANT at all !!!!
 
 # PREDEFINES
-NEWS_CLICKS_KEYS = ["news_id",
-                    "exposure_time",
-                    "dwelltime"]
+NEWS_CLICKS_KEYS = [
+    "news_id",                    
+    "user_id",                    
+    "exposure_time",                    
+    "dwelltime"
+    ]
 
 USER_HISTORY_KEYS = [ "user_id",
                       "news_id",
@@ -52,6 +55,8 @@ def create_hbase_connection(host, port):
 def write_to_hbase(df, connection):
     data =df
     
+    # print('Start data processing')
+    
     user_id = data['UserID']
     history_news_clicks = data['ClicknewsID'].split()
     history_dwelltimes = list(map(int, data['dwelltime'].split()))
@@ -77,13 +82,42 @@ def write_to_hbase(df, connection):
         category_value = row.get(column.encode())
         print("Category value is"+category_value)
         # Regular
-        table.put(news_id.encode()+str(exposure_time).encode(),
+        table.put(category.encode()+str(exposure_time).encode(),
                   {CATEGORY_CLICKS_CF+":"+CATEGORY_CLICKS_KEYS[0]:news_id.encode(),
                    CATEGORY_CLICKS_CF+":"+CATEGORY_CLICKS_KEYS[1]:str(exposure_time).encode(),
                    CATEGORY_CLICKS_CF+":"+CATEGORY_CLICKS_KEYS[2]:str(category_value).encode()})
 
         
+    # print('Writing to User History Table finished')
+
+    # print('Start writing to Category Clicks Table')
+
+    # 写入category_clicks表
+    category_clicks_table = connection.table(CATEGORY_CLICKS_TNAME)
+    news_info_table = connection.table(NEWS_INFO_TNAME)
+    # get category from news_info table
+    # put news_id,exposure_time,category into hbase
+    for news_id,exposure_time in zip(history_news_clicks,history_exposure_times):
+        # get category
+        row_key = news_id.encode()
+        column = NEWS_INFO_CF + ":" + NEWS_INFO_KEYS[0]
+        row = news_info_table.row(row_key, columns=[column])
+        category = row.get(column.encode()).decode()
+        # Regular
+        category_clicks_table.put(
+            news_id.encode()+str(exposure_time).encode(),
+            {
+                CATEGORY_CLICKS_CF+":"+CATEGORY_CLICKS_KEYS[0]:str(category).encode(),
+                CATEGORY_CLICKS_CF+":"+CATEGORY_CLICKS_KEYS[1]:news_id.encode(),
+                CATEGORY_CLICKS_CF+":"+CATEGORY_CLICKS_KEYS[2]:str(exposure_time).encode()
+            }
+        )
+
+    # print('Writing to Category Clicks Table finished')
+
     connection.close()
+
+    # print("Writing to HBase finished")
         
 
 

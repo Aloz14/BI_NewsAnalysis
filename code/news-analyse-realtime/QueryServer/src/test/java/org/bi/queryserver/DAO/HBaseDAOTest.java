@@ -19,6 +19,6 @@ public class HBaseDAOTest {
         String startRowKey = newsID + startTime;
         String endRowKey = newsID + endTime;
 
-        System.out.println(hBaseDAO.getData(tableName,startRowKey, endRowKey));
+        System.out.println(hBaseDAO.getData(tableName, startRowKey, endRowKey));
     }
 }

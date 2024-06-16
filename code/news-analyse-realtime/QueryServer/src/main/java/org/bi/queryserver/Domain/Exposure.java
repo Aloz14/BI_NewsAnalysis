@@ -8,7 +8,6 @@ import java.util.Objects;
 /**
  * 冗余的数据结构
  * 可能弃用
- *
  */
 @Deprecated
 public class Exposure {

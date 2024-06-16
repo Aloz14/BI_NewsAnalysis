@@ -8,6 +8,7 @@ import redis.clients.jedis.JedisPool;
 
 @Service
 public class RedisDAO {
+    // Redis连接池
     @Autowired
     private JedisPool jedisPool;
 

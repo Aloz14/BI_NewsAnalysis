@@ -1,10 +1,10 @@
-package org.bi.queryserver.Service;
+package org.bi.queryserver.Service.impl;
 
 import org.bi.queryserver.DAO.HBaseDAO;
 import org.bi.queryserver.DAO.MySQLDAO;
 import org.bi.queryserver.DAO.RedisDAO;
 import org.bi.queryserver.Domain.Favor;
-import org.bi.queryserver.Utils.NewsCategories;
+import org.bi.queryserver.Service.IUserService;
 import org.bi.queryserver.Utils.PerformanceLogger;
 import org.bi.queryserver.Utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -20,7 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class UserService {
+public class UserService implements IUserService {
     @Autowired
     HBaseDAO hbaseDAO;
 
@@ -33,9 +32,21 @@ public class UserService {
     @Autowired
     NewsService newsService;
 
+
+    /**
+     * [Archived]
+     * 获取用户历史数据
+     *
+     * @param userID
+     * @param startTime
+     * @param endTime
+     * @return
+     * @throws Exception
+     */
+    @Override
     public List<Favor> getUserHistory(String userID,
-                               String startTime,
-                               String endTime) throws Exception {
+                                      String startTime,
+                                      String endTime) throws Exception {
 
         final String TABLE_NAME = "user_history";
         final String CF_NAME = "info";
@@ -78,7 +89,7 @@ public class UserService {
 
         // favor: 一个Instant对应一个类别
         List<Favor> favors = new ArrayList<Favor>();
-        List<Instant> instants = TimeUtils.splitInstants(startTime,endTime,SEG_NUM);
+        List<Instant> instants = TimeUtils.splitInstants(startTime, endTime, SEG_NUM);
         for (Instant instant : instants) {
             favors.add(new Favor(instant));
         }
@@ -93,7 +104,7 @@ public class UserService {
                 Instant exposureTime = TimeUtils.stringToInstant(row.get(CF_NAME + ":" + COL_NAME_EXPOSURETIME));
                 String category = null;
                 try {
-                    category = newsService.getNewsCategory(newsID);
+                    category = newsService.getNewsInfo(newsID).getCategory();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -131,4 +142,6 @@ public class UserService {
 
         return favors;
     }
+
+
 }

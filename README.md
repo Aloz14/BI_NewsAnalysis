@@ -73,6 +73,7 @@ description: 用于存储新闻的被曝光时间和用户浏览时间
 attribute:
 
 - news_id
+- user_id
 - exposure_time
 - dwelltime
 
@@ -93,19 +94,18 @@ attribute:
 
 - user_id
 - news_id
-- is_clicked
 - exposure_time
 - dwelltime
 
 row key:
 
-user_id + news_id + exposure_time : bytes
+user_id +  exposure_time : bytes
 
 ddl:
 
 create "user_history", "info"
 
-#### News Info
+### News Info
 table name: news_info
 
 description: 新闻信息
@@ -248,7 +248,6 @@ NewsInfo存储在HBase中，无需再推送到Redis中。
 ### FuncPt4: 特定查询
 
 - 时间
-  - 时间点
   - 时间段
 - 新闻主题
 - 新闻标题长度

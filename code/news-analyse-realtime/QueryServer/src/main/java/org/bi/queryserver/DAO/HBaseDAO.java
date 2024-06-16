@@ -157,8 +157,8 @@ public class HBaseDAO {
      * @param endRowKey
      * @return
      */
-    public List<Map<String,String>> getData(String tableName,
-                                            String startRowKey,String endRowKey){
+    public List<Map<String, String>> getData(String tableName,
+                                             String startRowKey, String endRowKey) {
         List<Map<String, String>> list = new ArrayList<>();
         try {
             Table table = hbaseAdmin.getConnection().getTable(TableName.valueOf(tableName));
@@ -185,8 +185,7 @@ public class HBaseDAO {
                 list.add(map);
             }
             table.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return list;

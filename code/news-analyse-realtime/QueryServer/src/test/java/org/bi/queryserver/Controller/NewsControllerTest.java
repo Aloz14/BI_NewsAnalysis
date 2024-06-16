@@ -12,7 +12,7 @@ public class NewsControllerTest {
 
     @Test
     public void testGetNewsHistoty() throws Exception {
-        newsController.getNewsHistory("N100155");
+        newsController.getClicksHistory("N100155");
     }
 
     @Test
@@ -23,6 +23,5 @@ public class NewsControllerTest {
     public void testGetCategory(){
         newsController.Trend("news","2019-06-01 00:00:00","2019-07-01 00:00:00");
     }
-
 
 }
