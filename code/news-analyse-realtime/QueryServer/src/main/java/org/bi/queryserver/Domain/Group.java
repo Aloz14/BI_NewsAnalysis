@@ -3,12 +3,12 @@ package org.bi.queryserver.Domain;
 import java.util.List;
 
 public class Group {
-    //List<String> newsTheme;
-    //List<String> title_length;
+    List<String> news_theme;
+    List<String> title_length;
     List<String> news_length;
     List<String> user_id;
     //List<String> titleLength;
-    //List<String> news_id;
+    List<String> news_id;
 
 //    @Override
 //    public String toString() {
@@ -21,22 +21,24 @@ public class Group {
 //                '}';
 //    }
 
-//    public List<String> getNewsTheme() {
-//        return newsTheme;
-//    }
-//
-//    public void setNewsTheme(List<String> newsTheme) {
-//        this.newsTheme = newsTheme;
-//    }
-//
-//    public List<String> getTitle_length() {
-//        return title_length;
-//    }
-//
-//    public void setTitle_length(List<String> title_length) {
-//        this.title_length = title_length;
-//    }
-//
+
+    public List<String> getNews_theme() {
+        return news_theme;
+    }
+
+    public void setNews_theme(List<String> news_theme) {
+        this.news_theme = news_theme;
+    }
+
+
+    public List<String> getTitle_length() {
+        return title_length;
+    }
+
+    public void setTitle_length(List<String> title_length) {
+        this.title_length = title_length;
+    }
+
     public List<String> getNews_length() {
         return news_length;
     }
@@ -61,11 +63,11 @@ public class Group {
     }
 
 
-//    public List<String> getNews_id() {
-//        return news_id;
-//    }
+    public List<String> getNews_id() {
+        return news_id;
+    }
 //
-//    public void setNews_id(List<String> news_id) {
-//        this.news_id = news_id;
-//    }
+    public void setNews_id(List<String> news_id) {
+        this.news_id = news_id;
+    }
 }
