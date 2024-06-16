@@ -373,7 +373,9 @@ public class NewsService implements INewsService {
         // 创建StringBuilder对象用于记录查询内容
         StringBuilder queryInfo = new StringBuilder();
         queryInfo.append("SELECT * FROM ").append(TABLE_NAME).append(" WHERE ")
-                .append(CF_NAME).append(":").append(COL_NAME_CATEGORY).append(" = '").append(category).append("';\n");
+                .append(CF_NAME).append(":").append(COL_NAME_CATEGORY).append(" = '").append(category).
+        append(" AND START_ROW_KEY= ").append(START_ROW_KEY).append(" AND END_ROW_KEY= ")
+                .append(END_ROW_KEY).append("';\n");
 
         // 将查询内容记录到查询信息中
         queryInfo.append("Query details:\n");
