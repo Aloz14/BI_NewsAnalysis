@@ -66,6 +66,8 @@ public class RedisDAO {
     }
 
     public <T> List<T> mget(Class<T> valueType,String... keys) throws JsonProcessingException {
+        if(keys.equals("")||keys.length==0)
+            return null;
         List<String> values = mget(keys);
         List<T> result = new ArrayList<>();
         for (String value : values) {

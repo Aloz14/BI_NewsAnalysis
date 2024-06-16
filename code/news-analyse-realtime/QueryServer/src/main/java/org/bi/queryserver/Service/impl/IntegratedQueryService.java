@@ -109,9 +109,11 @@ public class IntegratedQueryService implements IIntegratedQueryService {
         List<NewsInfo> newsInfos = newsService.getNewsInfo(newsIDs);
 
         // 通过标题长度和内容长度进行筛选
-        for (NewsInfo newsInfo : newsInfos) {
-            if(newsInfo.getHeadlineLen() > titleMaxLen || newsInfo.getNewsBodyLen() > bodyMaxLen){
-                newsIDSet.remove(newsInfo.getNewsID());
+        if(newsInfos!=null) {
+            for (NewsInfo newsInfo : newsInfos) {
+                if (newsInfo.getHeadlineLen() > titleMaxLen || newsInfo.getNewsBodyLen() > bodyMaxLen) {
+                    newsIDSet.remove(newsInfo.getNewsID());
+                }
             }
         }
 
