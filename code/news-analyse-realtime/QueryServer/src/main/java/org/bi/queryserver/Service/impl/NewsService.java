@@ -7,8 +7,12 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.spark.JavaHBaseContext;
+import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.streaming.Duration;
+import org.apache.spark.streaming.api.java.JavaDStream;
+import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.bi.queryserver.DAO.HBaseDAO;
 import org.bi.queryserver.DAO.MySQLDAO;
 import org.bi.queryserver.DAO.RedisDAO;
@@ -25,6 +29,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -43,19 +48,47 @@ public class NewsService implements INewsService {
     JavaSparkContext jsc;
 
     public void testSpark() {
+        // 设置 Spark 配置
+        SparkConf sparkConf = new SparkConf().setAppName("Spark Streaming HBase Example").setMaster("local[*]");
+        // 创建 Spark Streaming 上下文
+        JavaStreamingContext streamingContext = new JavaStreamingContext(sparkConf, new Duration(5000)); // 设置批处理时间间隔为 5 秒
+
+        // 配置 HBase
         Configuration hbaseConf = HBaseConfiguration.create();
         hbaseConf.set("hbase.zookeeper.quorum", "122.51.75.129");
         hbaseConf.set("hbase.zookeeper.property.clientPort", "2181");
-        JavaHBaseContext hbaseContext = new JavaHBaseContext(jsc,hbaseConf);
 
-        Scan scan = new Scan();
+        // 初始化 HBase 上下文
+        JavaSparkContext sparkContext = streamingContext.sparkContext();
+        JavaHBaseContext hbaseContext = new JavaHBaseContext(sparkContext, hbaseConf);
 
-        JavaRDD<Tuple2<ImmutableBytesWritable, Result>> hbaseRDD = hbaseContext.hbaseRDD(
-                TableName.valueOf("news_clicks"),
-                scan);
+        // 创建一个队列用于存放数据
+        Queue<JavaRDD<Integer>> queue = new LinkedBlockingQueue<>();
 
-        long count = hbaseRDD.count();
-        System.out.println("Total records in HBase: " + count);
+        // 创建 JavaDStream
+        JavaDStream<Integer> javaDStream = streamingContext.queueStream(queue);
+
+        // 向队列中添加数据
+        List<Integer> data = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) {
+            data.add(i);
+        }
+        queue.add(streamingContext.sparkContext().parallelize(data));
+
+        // 处理流式数据
+        javaDStream.foreachRDD(rdd -> {
+            if (!rdd.isEmpty()) {
+                // 对 RDD 中的数据进行处理，例如输出每条数据的内容
+                rdd.foreach(dataPoint -> {
+                    // 处理每条数据
+                    System.out.println("Received data: " + dataPoint);
+                });
+            }
+        });
+
+
+        // 启动 Spark Streaming
+        streamingContext.start();
     }
 
 
