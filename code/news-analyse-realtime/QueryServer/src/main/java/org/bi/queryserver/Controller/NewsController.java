@@ -32,6 +32,7 @@ public class NewsController {
 
     @GetMapping("/test")
     public String test() {
+        newsService.testSpark();
         return "test";
     }
 

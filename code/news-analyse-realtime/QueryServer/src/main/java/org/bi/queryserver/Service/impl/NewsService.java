@@ -1,6 +1,5 @@
 package org.bi.queryserver.Service.impl;
 
-
 import org.bi.queryserver.DAO.HBaseDAO;
 import org.bi.queryserver.DAO.MySQLDAO;
 import org.bi.queryserver.DAO.RedisDAO;
@@ -13,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -32,6 +28,14 @@ public class NewsService implements INewsService {
 
     @Autowired
     RedisDAO redisDAO;
+
+
+
+    public void testSpark() {
+
+    }
+
+
 
     /**
      * 单个新闻生命周期的查询，Archived
@@ -499,12 +503,15 @@ public class NewsService implements INewsService {
         }
         */
 
+        long t = System.currentTimeMillis();
         // 获取数据，范围查询，依据为RowKey
         List<Map<String, String>> res = hbaseDAO.getData(
                 TABLE_NAME,
                 START_ROW_KEY,
                 END_ROW_KEY
         );
+        System.out.println(System.currentTimeMillis() - t);
+        t = System.currentTimeMillis();
 
 
         // 时间节点和对应计数器
@@ -531,6 +538,9 @@ public class NewsService implements INewsService {
                 }
             }
         }
+
+        System.out.println(System.currentTimeMillis() - t);
+        t = System.currentTimeMillis();
 
 
         // 存储到对象当中

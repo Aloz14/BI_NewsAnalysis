@@ -180,12 +180,7 @@ public class UserService implements IUserService {
 
         logger.start();
 
-        long t1 = System.currentTimeMillis();
-
         List<Favor> favors = getUserFavors(userID, startTime, endTime);
-
-        System.out.println(System.currentTimeMillis() - t1);
-        t1 = System.currentTimeMillis();
 
         String favorCategory = "sport";
 
@@ -224,8 +219,6 @@ public class UserService implements IUserService {
             newsIDs.add(newsID);
         }
 
-        System.out.println(System.currentTimeMillis() - t1);
-        t1 = System.currentTimeMillis();
 
         // 结束查询，记录时间
         logger.stop();
