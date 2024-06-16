@@ -2,7 +2,6 @@ package org.bi.queryserver.Config;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.sql.SparkSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -25,18 +24,11 @@ public class SparkConfig {
                 .setMaster(master);
     }
 
-
-    /**
     @Bean
     @ConditionalOnMissingBean(JavaSparkContext.class)
-    public JavaSparkContext javaSparkContext()  {
+    public JavaSparkContext JavaSparkContext() {
         return new JavaSparkContext(sparkConf());
     }
-
-
-    */
-
-
 
 
 }

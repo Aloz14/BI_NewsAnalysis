@@ -1,5 +1,14 @@
 package org.bi.queryserver.Service.impl;
 
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
+import org.apache.hadoop.hbase.spark.JavaHBaseContext;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
 import org.bi.queryserver.DAO.HBaseDAO;
 import org.bi.queryserver.DAO.MySQLDAO;
 import org.bi.queryserver.DAO.RedisDAO;
@@ -10,6 +19,7 @@ import org.bi.queryserver.Utils.PerformanceLogger;
 import org.bi.queryserver.Utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import scala.Tuple2;
 
 import java.time.Instant;
 import java.util.*;
@@ -29,10 +39,23 @@ public class NewsService implements INewsService {
     @Autowired
     RedisDAO redisDAO;
 
-
+    @Autowired
+    JavaSparkContext jsc;
 
     public void testSpark() {
+        Configuration hbaseConf = HBaseConfiguration.create();
+        hbaseConf.set("hbase.zookeeper.quorum", "122.51.75.129");
+        hbaseConf.set("hbase.zookeeper.property.clientPort", "2181");
+        JavaHBaseContext hbaseContext = new JavaHBaseContext(jsc,hbaseConf);
 
+        Scan scan = new Scan();
+
+        JavaRDD<Tuple2<ImmutableBytesWritable, Result>> hbaseRDD = hbaseContext.hbaseRDD(
+                TableName.valueOf("news_clicks"),
+                scan);
+
+        long count = hbaseRDD.count();
+        System.out.println("Total records in HBase: " + count);
     }
 
 

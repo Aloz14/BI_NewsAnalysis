@@ -192,8 +192,6 @@ public class IntegratedQueryService implements IIntegratedQueryService {
                                         +result.get(index).getClicks());
                     }
                 }
-
-
             });
         }
 
