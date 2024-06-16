@@ -93,7 +93,28 @@ public class IntegratedQueryController {
                     bodyMinLen,
                     bodyMaxLen
             );
-            DataHelper dataHelper = new DataHelper(clicks,categories.toString(),String.valueOf(titleMaxLen),String.valueOf(bodyMaxLen),userIDs.toString());
+            String categoriesStr,titleMaxLenStr,bodyMaxLenStr,userIdStr;
+            if(categories.size()==0){
+                categoriesStr=null;
+            }else {
+                categoriesStr=categories.toString();
+            }
+            if(titleMaxLen==Integer.MAX_VALUE){
+                titleMaxLenStr=null;
+            }else{
+                titleMaxLenStr=String.valueOf(titleMaxLen);
+            }
+            if(userIDs.size()==0){
+                userIdStr=null;
+            }else{
+                userIdStr=userIDs.toString();
+            }
+            if(bodyMaxLen==Integer.MAX_VALUE){
+                bodyMaxLenStr=null;
+            }else{
+                bodyMaxLenStr=String.valueOf(titleMaxLen);
+            }
+            DataHelper dataHelper = new DataHelper(clicks,categoriesStr,titleMaxLenStr,bodyMaxLenStr,userIdStr);
             categories.clear();
             titleMaxLen=Integer.MAX_VALUE;
             bodyMaxLen=Integer.MAX_VALUE;
