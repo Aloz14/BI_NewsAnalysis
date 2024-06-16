@@ -93,7 +93,10 @@ public class IntegratedQueryController {
                     bodyMinLen,
                     bodyMaxLen
             );
-            DataHelper dataHelper = new DataHelper(clicks);
+            DataHelper dataHelper = new DataHelper(clicks,categories.toString(),String.valueOf(titleMaxLen),String.valueOf(bodyMaxLen),userIDs.toString());
+            categories.clear();
+            titleMaxLen=Integer.MAX_VALUE;
+            bodyMaxLen=Integer.MAX_VALUE;
             helpers.add(dataHelper);
         }
         groupHelper = new GroupHelper(helpers);
