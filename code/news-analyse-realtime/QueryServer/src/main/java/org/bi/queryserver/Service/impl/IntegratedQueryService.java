@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +41,7 @@ public class IntegratedQueryService implements IIntegratedQueryService {
      * @param bodyMinLen     = 0
      * @param bodyMaxLen
      */
-    public List<Clicks> integratedQuery(String[] userIDs,
+    public List<Clicks> integratedQuery(List<String> userIDs,
                                         String[] newsCategories,
                                         String startTime,
                                         String endTime,
@@ -187,9 +186,9 @@ public class IntegratedQueryService implements IIntegratedQueryService {
                 synchronized(new Object()){
                     int index = 0;
                     for(;index < newsClicks.size(); index++){
-                        result.get(index).setClicks(
-                                newsClicks.get(index).getClicks()
-                                        +result.get(index).getClicks());
+                        result.get(index).setHit(
+                                newsClicks.get(index).getHit()
+                                        +result.get(index).getHit());
                     }
                 }
             });
