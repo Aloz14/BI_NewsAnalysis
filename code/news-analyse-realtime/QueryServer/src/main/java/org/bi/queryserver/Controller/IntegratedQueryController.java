@@ -1,6 +1,7 @@
 package org.bi.queryserver.Controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.bi.queryserver.DAO.Response;
 import org.bi.queryserver.Domain.Clicks;
 import org.bi.queryserver.Domain.Data;
 import org.bi.queryserver.Domain.Group;
@@ -23,7 +24,7 @@ public class IntegratedQueryController {
     private IntegratedQueryService integratedQueryService;
 
     @PostMapping("/intgr_query")
-    public ResponseEntity<List<Clicks>> test(@RequestBody EnhancedData data, HttpServletRequest request) throws Exception {
+    public ResponseEntity<Response<List<Clicks>>> test(@RequestBody EnhancedData data, HttpServletRequest request) throws Exception {
         Group group=data.getData().getGroup().get(0);
         List<String> userIDs=new ArrayList<>();
         for (String userid : group.getUser_id()) {
@@ -34,7 +35,7 @@ public class IntegratedQueryController {
         int titleMaxLen = Integer.MAX_VALUE;
         int bodyMinLen = 0;
         int bodyMaxLen = Integer.MAX_VALUE;
-        return new ResponseEntity<>(integratedQueryService.integratedQuery(
+        List<Clicks> clicks = integratedQueryService.integratedQuery(
                 userIDs,
                 categories,
                 data.getData().getStart_time(),
@@ -43,6 +44,7 @@ public class IntegratedQueryController {
                 titleMaxLen,
                 bodyMinLen,
                 bodyMaxLen
-        ),HttpStatus.OK);
+        );
+        return new ResponseEntity<>(Response.success(clicks,"The data returned"),HttpStatus.OK);
     }
 }

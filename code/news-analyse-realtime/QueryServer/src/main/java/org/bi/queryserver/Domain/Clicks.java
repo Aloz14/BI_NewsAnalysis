@@ -15,6 +15,14 @@ public class Clicks {
         this.timestamp = timestamp;
     }
 
+    @Override
+    public String toString() {
+        return "Clicks{" +
+                "timestamp=" + timestamp +
+                ", clicks=" + clicks +
+                '}';
+    }
+
     public int getClicks() {
         return clicks;
     }
