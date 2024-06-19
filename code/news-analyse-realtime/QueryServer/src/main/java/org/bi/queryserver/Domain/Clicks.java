@@ -7,23 +7,35 @@ import java.time.Instant;
  * 实现从TimeStamp到ClicksCnt的读取
  */
 public class Clicks {
-    private Instant timestamp;
-    private int clicks;
+    private Instant time;
+    private int hit;
 
-    public Clicks(Instant timestamp, int clicks) {
-        this.clicks = clicks;
-        this.timestamp = timestamp;
+    public Clicks(Instant time, int hit) {
+        this.hit = hit;
+        this.time = time;
     }
-    public int getClicks() {
-        return clicks;
+
+    @Override
+    public String toString() {
+        return "Clicks{" +
+                "time=" + time +
+                ", hit=" + hit +
+                '}';
     }
-    public void setClicks(int clicks) {
-        this.clicks = clicks;
+
+    public int getHit() {
+        return hit;
     }
-    public Instant getTimestamp() {
-        return timestamp;
+
+    public void setHit(int hit) {
+        this.hit = hit;
     }
-    public void setTimestamp(Instant timestamp) {
-        this.timestamp = timestamp;
+
+    public Instant getTime() {
+        return time;
+    }
+
+    public void setTime(Instant time) {
+        this.time = time;
     }
 }

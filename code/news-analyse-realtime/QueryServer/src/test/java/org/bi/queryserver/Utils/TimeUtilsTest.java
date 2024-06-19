@@ -9,11 +9,11 @@ import java.time.Instant;
 public class TimeUtilsTest {
 
     @Test
-    public void testInstant(){
+    public void testInstant() {
         Instant instant1 = TimeUtils.stringToInstant("2019-06-13 00:00:00");
         Instant instant2 = TimeUtils.stringToInstant("2019-06-13 23:59:59");
         System.out.println("ins" + instant1);
-        System.out.println(TimeUtils.splitInstants(instant1,instant2,20));
+        System.out.println(TimeUtils.splitInstants(instant1, instant2, 20));
 
     }
 }

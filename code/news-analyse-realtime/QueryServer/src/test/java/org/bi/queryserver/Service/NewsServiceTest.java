@@ -1,5 +1,7 @@
 package org.bi.queryserver.Service;
 
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.bi.queryserver.Service.impl.NewsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +13,10 @@ public class NewsServiceTest {
 
     @Test
     public void testGetNewsCategory() throws Exception {
-        String newsID = "N10000";
-        System.out.println(newsService.getNewsCategory(newsID)); ;
+        String newsID = "N10";
+    }
+
+    @Test
+    public void testSpark(){
     }
 }

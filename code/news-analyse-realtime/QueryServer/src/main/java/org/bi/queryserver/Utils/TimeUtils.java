@@ -8,6 +8,7 @@ import java.util.List;
 public class TimeUtils {
     /**
      * 实现 yyyy-MM-dd HH:mm:ss 格式的时间字符串转为Instant对象
+     *
      * @param str
      * @return Instant
      */
@@ -25,8 +26,8 @@ public class TimeUtils {
      * @param end
      * @return List
      */
-    public static final List<Instant> splitInstants(String start, String end,int segNum){
-        return splitInstants(stringToInstant(start), stringToInstant(end),segNum);
+    public static final List<Instant> splitInstants(String start, String end, int segNum) {
+        return splitInstants(stringToInstant(start), stringToInstant(end), segNum);
     }
 
     /**
