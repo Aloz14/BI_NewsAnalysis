@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>StreamControl</module>
+        <module>data-stream-control</module>
     </modules>
 
     <properties>

@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.bi</groupId>
-    <artifactId>QueryServer</artifactId>
+    <artifactId>query-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>QueryServer</name>
     <description>QueryServer</description>

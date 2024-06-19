@@ -1,9 +1,7 @@
-# BI_NewsAnalysis
+# Insights
  A project covers news data generation, transforming, processing and analysis.
 
 ## 架构设计
-
-图片需要修改
 
 ![image-20240527203037763](./img/Arch.drawio.png)
 

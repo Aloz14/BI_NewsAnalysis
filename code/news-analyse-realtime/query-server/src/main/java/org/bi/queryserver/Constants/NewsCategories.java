@@ -1,4 +1,4 @@
-package org.bi.queryserver.Utils;
+package org.bi.queryserver.Constants;
 
 public final class NewsCategories {
     public static final String[] CATEGORIES = {

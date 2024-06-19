@@ -1,4 +1,4 @@
-package org.bi.queryserver.Config;
+package org.bi.queryserver.Utils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
