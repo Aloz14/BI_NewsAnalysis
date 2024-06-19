@@ -30,7 +30,8 @@ public class NewsService {
     RedisDAO redisDAO;
 
     /**
-     * 单个新闻生命周期的查询，Archived
+     * [Archived]
+     * 单个新闻生命周期的查询
      * @param newsID
      * @return List
      * @throws Exception
@@ -155,7 +156,8 @@ public class NewsService {
     }
 
     /**
-     * 获取新闻信息的接口，Archived
+     * [Archived]
+     * 获取新闻信息的接口
      * @param newsID
      * @return NewsInfo
      * @throws Exception
@@ -232,7 +234,7 @@ public class NewsService {
 
 
     /**
-     * 轻量级的获取新闻种类
+     * 轻量地获取新闻所属的种类
      *
      * @param newsID
      * @return String
@@ -249,16 +251,16 @@ public class NewsService {
         final String COL_NAME_CATEGORY = "category";
 
         final String redisKey = newsID + ":" + COL_NAME_CATEGORY;
-        if (redisDAO.exists(redisKey)) {
-            return redisDAO.get(redisKey, String.class);
-        }
+        return redisDAO.get(redisKey, String.class);
 
+
+        /*
         // 获取数据
         Map<String, String> res = hbaseDAO.getData(TABLE_NAME, newsID);
         String category = res.get(CF_NAME + ":" + COL_NAME_CATEGORY);
         redisDAO.set(redisKey, category);
 
-        return category;
+        return category;*/
     }
 
 }

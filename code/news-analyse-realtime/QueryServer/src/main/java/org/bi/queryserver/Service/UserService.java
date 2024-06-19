@@ -74,6 +74,8 @@ public class UserService {
 
         // 此处性能需要优化
         // 总的查询为139.0ms,然而响应时间为557ms，推测连接时间过长
+        // 方向一：多线程
+        // 方向二：直接使用Redis而不判断是否存在
         for (Map<String, String> row : res) {
             String newsID = row.get(CF_NAME + ":" + COL_NAME_NEWS_ID);
             String category = newsService.getNewsCategory(newsID);
